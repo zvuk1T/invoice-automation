@@ -1,0 +1,16 @@
+# .gitignore
+# Files and folders that Git should NOT track
+
+# Generated PDF output files
+output/
+
+# Python cache files (auto-generated, not needed)
+__pycache__/
+*.pyc
+
+# Mac system files (invisible files macOS creates automatically)
+.DS_Store
+
+# Python virtual environment (if we create one later)
+venv/
+.env
