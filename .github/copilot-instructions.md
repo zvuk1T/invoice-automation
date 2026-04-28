@@ -316,6 +316,26 @@ Never bundle actions together.
 
 ---
 
+## Mental Model Rule
+
+After each important code block or terminal command, always provide a "Mental Model" section.
+
+Format it like this:
+
+```
+Mental model:
+command 1  →  "Simple human explanation"  📦
+command 2  →  "Simple human explanation"  🏷️
+```
+
+Rules:
+- Use simple analogies from real life
+- Use emojis to make it visual and memorable
+- Keep it short — maximum 3-4 lines
+- The user should be able to remember it days later
+
+---
+
 ## Continue Confirmation Rule
 
 Before executing ANY terminal command or creating/editing ANY file, the agent must always pause and let the user click "Continue" to confirm.
