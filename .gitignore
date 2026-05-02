@@ -14,3 +14,6 @@ __pycache__/
 # Python virtual environment (if we create one later)
 venv/
 .env
+
+# Personal session memory — local only, not for GitHub
+old_friends_folder/
