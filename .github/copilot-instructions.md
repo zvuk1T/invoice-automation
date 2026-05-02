@@ -91,3 +91,24 @@ invoice-automation/
 - Skip explanations
 - Continue without confirmation
 - Make silent architectural decisions
+
+---
+
+## 🌐 Language Rule
+- All `.md` files, code comments, and file content must be written in **English**
+- Chat conversation between Data and Spock can be in any language
+- Reason: English makes the project readable for international recruiters and collaborators
+
+---
+
+## 📖 Student-Friendly Documentation Rule
+Every guide or process document must be written so that any student can follow it independently.
+
+Each guide must include:
+- **What** we are doing and **why**
+- **Step-by-step** instructions with exact commands
+- **Expected output** after each command
+- **Troubleshooting section** — real problems encountered + how they were solved
+- **Mental Model** at the end — simple analogies with emojis
+
+Goal: A student who has never seen this project must be able to read the guide and reproduce the entire process alone.
