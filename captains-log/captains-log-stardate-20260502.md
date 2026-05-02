@@ -77,13 +77,37 @@ All steps must follow existing rules in `agent_instructions.md`:
 
 ---
 
+## ✅ EXECUTION COMPLETED (same day)
+
+All 5 steps from the action plan were executed:
+
+| Step | Action | Result |
+|------|--------|--------|
+| 1 | Deleted `agent_instructions.md`, `.github/copilot-instructions.md` is now single source of truth | ✅ |
+| 2 | Fixed folder name in instructions (`invoice-pdf-generator` → `invoice-automation`) | ✅ |
+| 3 | Consolidated overlapping rules, trimmed from 400+ lines to ~114 lines | ✅ |
+| 4 | Created `README.md` skeleton | ✅ |
+| 5 | Created `main.py` skeleton with 4 steps + student-friendly comments | ✅ |
+
+### Additional work completed:
+- GitHub repo created and live at `github.com/zvuk1T/invoice-automation`
+- `old_friends_folder` removed from GitHub (`git rm --cached`), added to `.gitignore`
+- Language Rule added: all `.md` files must be in English
+- Student-Friendly Documentation Rule added: every guide must be followable by any student
+- `github-setup-guide.md` fully translated to English with 4 real troubleshooting problems
+
+---
+
 ## 🔜 NEXT STEP (Start here next session)
 
-Open Copilot in VS Code and say:
+**Mission:** Build the HTML invoice template in `templates/invoice.html`
 
-> *"Spock, pročitaj agent_instructions.md i posljednji captains-log (stardate 20260502). Krećemo od Step 1 — rezolucija duplikata instrukcija."*
+- Design the invoice layout in HTML/CSS
+- Add Jinja2 placeholders: `{{ client_name }}`, `{{ invoice_no }}`, `{{ amount }}`, etc.
+- Pending decision: **WeasyPrint vs pdfkit** — choose PDF library and fill `requirements.txt`
 
-Copilot će tada pročitati ovaj plan i predložiti konkretnu izvedbu Step 1, sa pauzom prije izvršavanja.
+**Start command:**
+> *"Spock, pročitaj `.github/copilot-instructions.md` i posljednji captains-log."*
 
 ---
 
