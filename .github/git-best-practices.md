@@ -63,6 +63,33 @@ git commit -m "Kratka poruka o tome šta si uradio"
 
 ---
 
+### When to commit — the professional standard
+
+**One commit = one logical unit of work.** 🎯
+
+Not "one commit per day". Not "commit every small change". When you finish something that works — commit it.
+
+| ✅ Good commit | ❌ Bad commit |
+|---|---|
+| `"Add invoice HTML template"` | `"work in progress"` |
+| `"Fix PDF export for special characters"` | `"changes"` |
+| `"Update gitignore and requirements"` | `"various stuff"` |
+
+**Why this matters:**
+- If something breaks, you can go back to exactly the right point 🔙
+- Git history becomes readable — you see *what* was done and *why*
+- Other developers (or future you) can understand the project
+
+**Mental model:**
+```
+Commit = checkpoint in a video game 🎮
+Too few checkpoints → lose a lot of progress when you die
+Too many checkpoints → meaningless saves every 5 seconds
+Right amount → one checkpoint per completed level
+```
+
+---
+
 ### Check status — vidi šta je izmijenjeno
 ```bash
 git status
@@ -113,6 +140,38 @@ git log --oneline
 ```
 - `git log --oneline` → "Pokaži mi sve checkpointe u jednoj liniji" 📜
 - Svaki red = jedan commit sa ID-om i porukom
+
+---
+
+## ⚡ CHAINED COMMANDS — Više komandi u jednoj liniji
+
+### What is `&&`?
+`&&` → "Uradi ovo, a ako uspije — uradi sljedeće" 🔗
+
+If the first command fails, the rest **will not run**. This is a safety mechanism.
+
+---
+
+### Commit and push a specific file
+```bash
+git add path/to/file.md && git commit -m "your message" && git push
+```
+
+**What each part does:**
+- `git add path/to/file.md` → "Stavi samo ovaj jedan fajl u kutiju" 📦
+- `&&` → "Ako to uspije, nastavi"
+- `git commit -m "your message"` → "Zatvori kutiju i nalijepi natpis" 🏷️
+- `&&` → "Ako to uspije, nastavi"
+- `git push` → "Pošalji na GitHub" 🚀
+
+**Real example from this project:**
+```bash
+git add .github/copilot-instructions.md && git commit -m "chore: add Spock voice definition to Identity section" && git push
+```
+
+**When to use specific file vs. `git add .`:**
+- `git add .` → when you want to commit ALL changed files
+- `git add specific/file.md` → when you want to commit only ONE file, and leave others for later
 
 ---
 
