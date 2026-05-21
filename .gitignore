@@ -7,6 +7,7 @@ output/
 # Python cache files (auto-generated, not needed)
 __pycache__/
 *.pyc
+*.pyo
 
 # Mac system files (invisible files macOS creates automatically)
 .DS_Store
@@ -21,3 +22,5 @@ old_friends_folder/
 # Customer data — GDPR/privacy protection, never upload to GitHub
 data/*.pdf
 data/*.xlsx
+data/APRIL 2026/
+data/*/
