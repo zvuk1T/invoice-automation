@@ -1,6 +1,6 @@
 ---
 mode: 'agent'
-description: 'Update the captain\'s log for today before committing.'
+description: "Update the captain's log for today before committing."
 ---
 
 Open the captain's log for today's date in `captains-log/`.

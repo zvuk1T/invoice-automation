@@ -1,6 +1,6 @@
 ---
 mode: 'agent'
-description: 'Checklist for processing a new month\'s invoices.'
+description: "Checklist for processing a new month's invoices."
 ---
 
 We are starting a new invoice month. Work through this checklist one step at a time.

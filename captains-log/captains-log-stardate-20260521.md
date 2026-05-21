@@ -14,6 +14,12 @@
 
 ## ✅ WHAT WE ACCOMPLISHED TODAY
 
+### Part 0 — Bug fix (session start)
+- Fixed YAML frontmatter error in `.github/prompts/new-month.prompt.md` ✅
+- Fixed YAML frontmatter error in `.github/prompts/update-captains-log.prompt.md` ✅
+- **Problem:** apostrophe inside single-quoted YAML string (`'captain\'s'`) causes parse error
+- **Solution:** switched to double quotes (`"captain's"`) — apostrophe is safe inside double quotes
+
 ### Part 1 — Repo cleanup (earlier session)
 - Restored `copilot-instructions.md` to correct location `.github/` ✅
 - Added `data/*.pdf` to `.gitignore` — GDPR/privacy protection ✅
@@ -83,6 +89,8 @@ Excel file fully populated with April 2026 data from 36 PDFs. All changes commit
 - Invoice number format `YYYY-MM-NNNN` is sortable and unambiguous (not confused with a date)
 - `pdfplumber` extracts raw text from PDF — regex then finds the specific values we need
 - PDF text can have typos/broken spacing — regex must be flexible enough to handle variations
+- To run a prompt file: type `#` in Copilot Chat and select the file from the dropdown — `/filename` is plain text, not a command
+- YAML single-quoted strings cannot contain apostrophes — use double quotes instead: `"captain's"` ✅
 
 ---
 
@@ -91,4 +99,5 @@ Excel file fully populated with April 2026 data from 36 PDFs. All changes commit
 *"Naming things correctly is not cosmetic — it determines whether the code is readable six months from now."*
 
 **Next session start:**
-> "Spock, pročitaj posljednji captains-log i krećemo na Step 5."
+> In Copilot Chat, type `#` and select `new-session.prompt.md` from the dropdown.
+> Do NOT type `/new-session.prompt.md` — that is plain text, not a command.

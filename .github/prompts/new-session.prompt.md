@@ -1,7 +1,13 @@
 ---
 mode: 'agent'
-description: 'Start a new working session — read the latest captain\'s log and summarize where we are.'
+description: "Start a new working session — read the latest captain's log and summarize where we are."
 ---
+
+<!-- 
+  HOW TO RUN THIS PROMPT:
+  In Copilot Chat, type # and select "new-session.prompt.md" from the dropdown.
+  Do NOT type /new-session.prompt.md — that is plain text and will not execute anything.
+-->
 
 Read the latest file from `captains-log/` (highest stardate number).
 
