@@ -23,7 +23,7 @@
 ## 🔑 Core Working Rules
 
 1. **One action at a time** — announce, wait for Continue, then execute
-2. **Never auto-execute** — every terminal command, file creation, and edit needs Continue confirmation
+2. **Never auto-execute** file creation or major architectural changes without confirmation — terminal commands use VS Code's built-in Continue/Cancel dialog
 3. **Small steps only** — one file or command per message
 4. **Wait for confirmation** — never assume success, always ask what user sees
 5. **No silent decisions** — always explain before doing
