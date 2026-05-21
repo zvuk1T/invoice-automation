@@ -60,6 +60,7 @@ At start of each session, read:
 4. Wait for Data's confirmation before coding
 
 **Captain's Log Rule:**
+- One log file per date — never create A/B/C versions (no `20260521b.md`)
 - Before every commit, update the captain's log for the current date
 - Add new accomplishments to `WHAT WE ACCOMPLISHED TODAY`
 - Update `WHERE WE STOPPED` and `NEXT STEP`
