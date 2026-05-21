@@ -56,21 +56,35 @@
 | `fiscal_number` | BR. FISK. RAČUNA |
 | `amount` | IZNOS (KM) |
 
+### Part 4 — HTML invoice template (Step 5)
+- Created `templates/invoice.html` — fully styled Jinja2 invoice template ✅
+- Modern design: clean layout, professional typography, A4 proportional width (760px) ✅
+- Brand color `#bb0033` applied via CSS variables in `:root` ✅
+- CSS variables defined: `--primary`, `--primary-dark`, `--primary-light`, `--ink`, `--ink-muted`, `--border` ✅
+- Jinja2 variables wired: `{{ invoice_number }}`, `{{ date }}`, `{{ period }}`, `{{ contract_number }}`, `{{ fiscal_number }}`, `{{ owner_name }}`, `{{ apartment_name }}`, `{{ address }}`, `{{ amount }}` ✅
+- All CSS comments written in English (per copilot-instructions.md) ✅
+- Fixed duplicate `</style>` block that appeared after one of the edit operations ✅
+- Template sections: HEADER → META ROW → RECIPIENT CARD → ITEMS TABLE → TOTAL BOX → NOTE → FOOTER ✅
+- Logo/stamp/signature placeholders: NOT YET ADDED — waiting for PNG exports from user's Illustrator file
+
 ---
 
 ## 📍 WHERE WE STOPPED
 
-Excel file fully populated with April 2026 data from 36 PDFs. All changes committed and pushed.
+`templates/invoice.html` complete (no logo yet). Committed end of session 20260521.
 
 ---
 
 ## 🔜 NEXT STEP (Start here next session)
 
-**Step 5: Build the HTML invoice template**
+**Step 5 continued: Add logo, stamp and signature to the HTML template**
 
-- Create `templates/invoice.html` using Jinja2
-- Design matches the existing PDF invoice layout
-- Reference: `data/APRIL 2026/3.APP DIJANA.pdf` as visual reference
+- User needs to export from `templates/template invoice rebuild v02 test.pdf` (Illustrator source):
+  - `logo.png` → save to `templates/assets/`
+  - `stamp.png` → save to `templates/assets/`
+  - `signature.png` → save to `templates/assets/`
+- Then add `<img>` tags to `invoice.html` header (logo) and footer (stamp + signature)
+- After that: connect template to Excel data via Python + Jinja2 (Step 6)
 
 ---
 
@@ -91,6 +105,12 @@ Excel file fully populated with April 2026 data from 36 PDFs. All changes commit
 - PDF text can have typos/broken spacing — regex must be flexible enough to handle variations
 - To run a prompt file: type `#` in Copilot Chat and select the file from the dropdown — `/filename` is plain text, not a command
 - YAML single-quoted strings cannot contain apostrophes — use double quotes instead: `"captain's"` ✅
+- CSS variables in `:root` → define a color once, use it everywhere with `var(--name)` — one change updates the entire design
+- `display: flex` + `justify-content: space-between` → places two elements on opposite sides of a row
+- `border-collapse: collapse` on a table → removes double lines between cells
+- `opacity: 0.7` → makes an element semi-transparent (useful for secondary text on colored backgrounds)
+- WeasyPrint prefers inline CSS — external stylesheets can cause rendering issues in PDF output
+- All code comments must be in English per copilot-instructions.md — even in HTML/CSS files
 
 ---
 

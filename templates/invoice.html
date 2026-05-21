@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Faktura – {{ apartment_name }}</title>
+  <style>
+
+    /* ══════════════════════════════════════════════
+       RESET
+       ──────────────────────────────────────────────
+       Every browser has its own "default" styles.
+       The * (asterisk = "everything") removes those
+       default margins and paddings for a clean base.
+       box-sizing: border-box → padding is calculated
+       INSIDE the element width, not added on top.
+       ══════════════════════════════════════════════ */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ══════════════════════════════════════════════
+       COLOR PALETTE — CSS variables
+       ──────────────────────────────────────────────
+       :root is a special "container" for global variables.
+       We define them once here, then use them everywhere
+       as var(--name).
+
+       Why variables? If the company changes its logo color —
+       we change it HERE only. Everything updates automatically.
+       ══════════════════════════════════════════════ */
+    :root {
+      --primary: #bb0033;       /* main brand color — logo red */
+      --primary-dark: #880024;  /* darker variant — for shadows */
+      --primary-light: #f9f0f3; /* pale pink — for backgrounds */
+      --ink: #1a0008;           /* near-black with red undertone — for body text */
+      --ink-muted: #555;        /* grey — for secondary text */
+      --border: #e8d0d8;        /* pink-grey — for card borders */
+    }
+
+    /* ══════════════════════════════════════════════
+       BODY — the full page
+       ──────────────────────────────────────────────
+       font-family → which font to use (Segoe UI = modern Windows font,
+                     Arial = fallback if Segoe is not available)
+       max-width   → invoice never wider than 760px (A4 proportional)
+       margin: 0 auto → "0" top/bottom, "auto" left/right
+                        = centers content horizontally on the page
+       padding: 48px → white frame around all content
+       ══════════════════════════════════════════════ */
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      color: var(--ink);
+      background: #fff;
+      padding: 48px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    /* ══════════════════════════════════════════════
+       HEADER — top section of the invoice
+       ──────────────────────────────────────────────
+       display: flex → places children SIDE BY SIDE (left + right)
+       justify-content: space-between → pushes children apart
+                        = company name goes far left, "FAKTURA" far right
+       align-items: flex-start → aligns them to the TOP (not center)
+       border-bottom → red line separating header from the rest
+       ══════════════════════════════════════════════ */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 28px;
+      border-bottom: 3px solid var(--primary);
+      margin-bottom: 32px;
+    }
+
+    /* Company name — red and bold */
+    .company-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.5px; /* slight spacing between letters */
+    }
+
+    /* Address, JIB, bank — smaller grey text below the name */
+    .company-details {
+      margin-top: 6px;
+      color: var(--ink-muted);
+      font-size: 12px;
+      line-height: 1.7; /* line spacing = 1.7x the font size */
+    }
+
+    /* Right side of header — "FAKTURA" title and invoice number */
+    .invoice-label {
+      text-align: right; /* text aligned to the right */
+    }
+
+    /* Large "FAKTURA" heading */
+    .invoice-label h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: 2px;
+      text-transform: uppercase; /* automatically converts to uppercase */
+    }
+
+    /* Line below heading: "Br. fakture: 05/05/2026" */
+    .invoice-label .invoice-number {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #777;
+    }
+
+    /* Only the invoice number value is darker/bolder */
+    .invoice-label .invoice-number span {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ══════════════════════════════════════════════
+       META ROW — date, period, contract number...
+       ──────────────────────────────────────────────
+       Pink bar with 4 info fields in a row.
+       display: flex + space-between → distributes
+       4 fields evenly across the full width.
+       ══════════════════════════════════════════════ */
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      background: var(--primary-light); /* pale pink background */
+      border-radius: 8px; /* rounded corners */
+      padding: 16px 20px;
+    }
+
+    /* Label above each value — "DATUM", "PERIOD"... */
+    .meta-item label {
+      display: block; /* renders as block element (new line) */
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #999; /* grey color for labels */
+      margin-bottom: 4px;
+    }
+
+    /* The actual value — date, number... */
+    .meta-item span {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ══════════════════════════════════════════════
+       RECIPIENT CARD — who the invoice is billed to
+       ──────────────────────────────────────────────
+       Bordered card — owner name, apartment, address.
+       ══════════════════════════════════════════════ */
+    .recipient-section {
+      margin-bottom: 32px;
+    }
+
+    /* Small heading above the card: "FAKTURISANO" */
+    .section-title {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    /* The card itself with a border */
+    .recipient-card {
+      background: #fff;
+      border: 1.5px solid var(--border); /* thin pink-grey line */
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+
+    /* Owner name — larger and bold */
+    .recipient-card .recipient-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    /* Apartment name and address — smaller grey text */
+    .recipient-card .recipient-detail {
+      font-size: 12px;
+      color: var(--ink-muted);
+      line-height: 1.7;
+    }
+
+    /* ══════════════════════════════════════════════
+       ITEMS TABLE — line items
+       ──────────────────────────────────────────────
+       border-collapse: collapse → removes double lines
+       between table cells.
+       ══════════════════════════════════════════════ */
+    .items-section {
+      margin-bottom: 32px;
+    }
+
+    table {
+      width: 100%; /* table takes full width */
+      border-collapse: collapse;
+    }
+
+    /* Table header row — red background, white text */
+    thead tr {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    thead th {
+      padding: 11px 14px;
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 600;
+    }
+
+    /* Table rows — thin line below each row */
+    tbody tr {
+      border-bottom: 1px solid #f0f0f5;
+    }
+
+    /* Last row has no bottom line */
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody td {
+      padding: 13px 14px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    /* ══════════════════════════════════════════════
+       TOTAL BOX — total amount due
+       ──────────────────────────────────────────────
+       display: flex + justify-content: flex-end
+       → pushes the box all the way to the RIGHT
+         (standard placement in professional invoices)
+       ══════════════════════════════════════════════ */
+    .total-section {
+      display: flex;
+      justify-content: flex-end; /* push to the right */
+      margin-bottom: 40px;
+    }
+
+    /* Red card with the amount */
+    .total-box {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 8px;
+      padding: 18px 28px;
+      min-width: 200px;
+      text-align: right;
+    }
+
+    /* Small label above the amount: "UKUPNO ZA UPLATU" */
+    .total-box .total-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      opacity: 0.7; /* slightly transparent = lighter white */
+      margin-bottom: 4px;
+    }
+
+    /* Large amount number */
+    .total-box .total-amount {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    /* "KM" currency symbol — slightly smaller */
+    .total-box .total-currency {
+      font-size: 14px;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-left: 4px;
+    }
+
+    /* ══════════════════════════════════════════════
+       NOTE — VAT exemption notice
+       ══════════════════════════════════════════════ */
+    .note {
+      font-size: 11px;
+      color: #999;
+      font-style: italic; /* italic text */
+      margin-bottom: 40px;
+      padding-top: 8px;
+      border-top: 1px solid #eee;
+    }
+
+    /* ══════════════════════════════════════════════
+       FOOTER — contact info and signature
+       ──────────────────────────────────────────────
+       Same as header — flex with space-between:
+       contact info goes left, signature goes right.
+       align-items: flex-end → aligns both to the BOTTOM
+       ══════════════════════════════════════════════ */
+    .footer {
+      border-top: 1.5px solid var(--border);
+      padding-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end; /* align to bottom */
+    }
+
+    /* Contact details — left side */
+    .footer-contact {
+      font-size: 11px;
+      color: #888;
+      line-height: 1.8;
+    }
+
+    /* Signature block — right side */
+    .footer-signature {
+      text-align: right;
+      font-size: 12px;
+      color: #555;
+    }
+
+    /* Signer name — red and bold */
+    .footer-signature .sig-name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--primary);
+      margin-top: 4px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div>
+      <div class="company-name">e-agency Ljubinka Vuković s.p.</div>
+      <div class="company-details">
+        Srpska br. 2, 78000 Banja Luka<br>
+        JIB: 4509630120009<br>
+        NLB Banka: 562-09981279247-92
+      </div>
+    </div>
+    <div class="invoice-label">
+      <h1>Faktura</h1>
+      <div class="invoice-number">
+        Br. fakture: <span>{{ invoice_number }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── META ROW ── -->
+  <div class="meta-row">
+    <div class="meta-item">
+      <label>Datum</label>
+      <span>{{ date }}</span>
+    </div>
+    <div class="meta-item">
+      <label>Obračunski period</label>
+      <span>{{ period }}</span>
+    </div>
+    <div class="meta-item">
+      <label>Br. ugovora</label>
+      <span>{{ contract_number }}</span>
+    </div>
+    <div class="meta-item">
+      <label>Br. fiskalnog računa</label>
+      <span>{{ fiscal_number }}</span>
+    </div>
+  </div>
+
+  <!-- ── RECIPIENT ── -->
+  <div class="recipient-section">
+    <div class="section-title">Fakturisano</div>
+    <div class="recipient-card">
+      <div class="recipient-name">{{ owner_name }}</div>
+      <div class="recipient-detail">
+        {{ apartment_name }}<br>
+        {{ address }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ITEMS TABLE ── -->
+  <div class="items-section">
+    <table>
+      <thead>
+        <tr>
+          <th>Opis usluge</th>
+          <th>Period</th>
+          <th style="text-align:right;">Iznos (KM)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Agencijska naknada – kratkoročni najam</td>
+          <td>{{ period }}</td>
+          <td style="text-align:right; font-weight:600;">{{ amount }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ── TOTAL ── -->
+  <div class="total-section">
+    <div class="total-box">
+      <div class="total-label">Ukupno za uplatu</div>
+      <div class="total-amount">{{ amount }}<span class="total-currency">KM</span></div>
+    </div>
+  </div>
+
+  <!-- ── NOTE ── -->
+  <div class="note">
+    * e-agency s.p. Ljubinka Vuković nije u sistemu PDV-a.
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <div class="footer-contact">
+      TEL: +387 (0) 65 652 344 | +387 (0) 66 341 341<br>
+      E-mail: info@nekretnineonline.net<br>
+      Web: www.checkin-balkan.com
+    </div>
+    <div class="footer-signature">
+      S poštovanjem,
+      <div class="sig-name">Ljubinka Vuković</div>
+    </div>
+  </div>
+
+</body>
+</html>
