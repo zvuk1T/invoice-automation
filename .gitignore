@@ -20,3 +20,4 @@ old_friends_folder/
 
 # Customer data — GDPR/privacy protection, never upload to GitHub
 data/*.pdf
+data/*.xlsx
