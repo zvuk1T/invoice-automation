@@ -7,13 +7,14 @@
 ## 📋 SESSION SUMMARY
 
 **Session Date:** 21.05.2026
-**Session Status:** ✅ Repo cleaned, documentation updated
-**Current Phase:** Pre-Phase 3 — Ready to build Excel file
+**Session Status:** ✅ Excel file prepared, utilities script created, guide written
+**Current Phase:** Phase 3 in progress — Excel data ready for use in Python
 
 ---
 
 ## ✅ WHAT WE ACCOMPLISHED TODAY
 
+### Part 1 — Repo cleanup (earlier session)
 - Restored `copilot-instructions.md` to correct location `.github/` ✅
 - Added `data/*.pdf` to `.gitignore` — GDPR/privacy protection ✅
 - Updated `requirements.txt` — added `pdfplumber`, comments translated to English ✅
@@ -25,21 +26,45 @@
   - New section: `⚡ CHAINED COMMANDS` — explains `&&` operator ✅
   - New section: `When to commit` — one commit = one logical unit ✅
 
+### Part 3 — PDF extraction and Excel population
+- Reviewed all 36 PDF invoices from `data/APRIL 2026/` ✅
+- Created `pdf_extractor.py` — extracts all invoice fields from PDF text ✅
+- Handled edge cases: leading zeros in contract numbers, broken "Ugovorb r." typo in one PDF ✅
+- `invoice_number` format changed to `2026-05-0003` (YYYY-MM-NNNN) — sortable, unambiguous ✅
+- 36/36 PDFs matched and Excel updated successfully ✅
+- Added `data/*.xlsx` to `.gitignore` — GDPR protection ✅
+
+---
+
+## 📊 FINAL EXCEL COLUMN NAMES
+
+| English (code) | Serbian (original) |
+|---|---|
+| `contract_number` | BR. UGOVORA |
+| `date` | DATUM POTPISIVANJA |
+| `apartment_name` | NAZIV OBJEKTA |
+| `owner_name` | IME I PREZIME |
+| `address` | ADRESA |
+| `period` | OBRAČ. PERIOD |
+| `invoice_number` | BR. FAKTURE |
+| `fiscal_number` | BR. FISK. RAČUNA |
+| `amount` | IZNOS (KM) |
+
 ---
 
 ## 📍 WHERE WE STOPPED
 
-Documentation and repo are clean. All changes committed and pushed.
+Excel file fully populated with April 2026 data from 36 PDFs. All changes committed and pushed.
 
 ---
 
 ## 🔜 NEXT STEP (Start here next session)
 
-**Step 3: Create the sample Excel file**
+**Step 5: Build the HTML invoice template**
 
-- Create `data/invoices.xlsx` with correct column headers (9 columns, English names)
-- Add 2-3 sample rows (test data)
-- Reference: Excel structure defined in `captains-log-stardate-20260520.md`
+- Create `templates/invoice.html` using Jinja2
+- Design matches the existing PDF invoice layout
+- Reference: `data/APRIL 2026/3.APP DIJANA.pdf` as visual reference
 
 ---
 
@@ -49,12 +74,21 @@ Documentation and repo are clean. All changes committed and pushed.
 - One commit = one logical unit of work (not one per day, not one per line)
 - `&&` in terminal = "do this, and if it succeeds — do the next thing"
 - Captain's log should be written before closing a session, not after opening the next one
+- `pandas` reads Excel into memory as a "DataFrame" — like a table you can manipulate with code
+- `df.rename(columns={...})` replaces column names using a dictionary (old → new)
+- `index=False` in `to_excel()` prevents pandas from adding an unwanted row-number column
+- CSV has encoding risk with special characters (č, š, ž) — `.xlsx` is safer for this project
+- `data/*.xlsx` must be in `.gitignore` — contains real client names and addresses (GDPR)
+- `zfill(4)` pads a number with leading zeros to 4 digits: `"3".zfill(4)` → `"0003"`
+- Invoice number format `YYYY-MM-NNNN` is sortable and unambiguous (not confused with a date)
+- `pdfplumber` extracts raw text from PDF — regex then finds the specific values we need
+- PDF text can have typos/broken spacing — regex must be flexible enough to handle variations
 
 ---
 
 ## 🖖 SPOCK'S NOTE
 
-*"Discipline in version control is not bureaucracy — it is the difference between a project you can trust and one you cannot."*
+*"Naming things correctly is not cosmetic — it determines whether the code is readable six months from now."*
 
 **Next session start:**
-> "Spock, pročitaj posljednji captains-log i krećemo na Step 3."
+> "Spock, pročitaj posljednji captains-log i krećemo na Step 5."
