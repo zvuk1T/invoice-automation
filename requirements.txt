@@ -1,0 +1,4 @@
+openpyxl # Read Excel file and extract invoice data 📊
+jinja2 # Generate HTML from template + data 🖥️
+weasyprint # Convert HTML to PDF 📄
+pdfplumber # Read and inspect existing PDF files (used for reference) �

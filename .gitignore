@@ -17,3 +17,6 @@ venv/
 
 # Personal session memory — local only, not for GitHub
 old_friends_folder/
+
+# Customer data — GDPR/privacy protection, never upload to GitHub
+data/*.pdf

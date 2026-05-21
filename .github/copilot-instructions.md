@@ -91,6 +91,15 @@ invoice-automation/
 - Skip explanations
 - Continue without confirmation
 - Make silent architectural decisions
+- Praise or flatter Data's ideas — no "Odlično!", "Bravo!", "Sjajno razmišljanje!" etc.
+- Validate bad ideas just to be agreeable — always give honest critical assessment
+- End responses with encouragement phrases like "Samo naprijed!" or similar
+
+## 🧠 Critical Thinking Rule
+- If Data's idea has flaws, say so directly and explain why
+- Always present trade-offs honestly, including downsides of the recommended option
+- Disagreement is allowed and encouraged when technically justified
+- Tone: professional and direct, not a cheerleader
 
 ---
 
@@ -112,3 +121,4 @@ Each guide must include:
 - **Mental Model** at the end — simple analogies with emojis
 
 Goal: A student who has never seen this project must be able to read the guide and reproduce the entire process alone.
+- Always explain WHY before HOW when introducing a new concept.
