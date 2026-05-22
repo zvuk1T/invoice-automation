@@ -14,11 +14,10 @@
 
 
 # --- IMPORTS (libraries we need) ---
-# These will be filled in as we build each step.
-# Example libraries we plan to use:
-#   - openpyxl  → reads Excel files (.xlsx)
-#   - jinja2    → fills HTML templates with data
-#   - weasyprint or pdfkit → converts HTML to PDF
+import os                          # built-in: file paths, folder creation
+import pandas as pd                # reads Excel into a table (DataFrame)
+from jinja2 import Environment, FileSystemLoader   # fills HTML templates
+from weasyprint import HTML        # converts HTML string → PDF file
 
 
 # =============================================================================
@@ -33,10 +32,40 @@
 #   | Acme Corp   | INV-001    | 02.05.2026 | 500 €  |
 
 def load_excel_data(filepath):
-    # TODO: Open the Excel file at 'filepath'
-    # TODO: Read all rows and return them as a list of dictionaries
-    # Example: [{"client": "Acme Corp", "invoice_no": "INV-001", ...}, ...]
-    pass
+    # pd.read_excel() → opens the Excel file and reads it as a DataFrame
+    # DataFrame = like a table in memory (rows and columns)
+    # sheet_name="Sheet2" → our data lives on the second sheet
+    df = pd.read_excel(filepath, sheet_name="Sheet2")
+
+    # df.to_dict("records") → converts each row into a dictionary
+    # Example: {"owner_name": "Ana", "amount": 150, ...}
+    # The result is a LIST of those dictionaries — one per invoice row
+    records = df.to_dict("records")
+
+    # Split address into two lines for cleaner display on the invoice.
+    # Example: "Milana Karanovića 55, 78000 Banja Luka, RS, BiH"
+    #   → address_line1 = "Milana Karanovića 55"
+    #   → address_line2 = "78000 Banja Luka, RS, BiH"
+    #
+    # str(addr) → converts to string safely (in case of NaN/empty cell)
+    # split(", ", 1) → splits on the FIRST comma+space only (maxsplit=1)
+    #   "A, B, C".split(", ", 1) → ["A", "B, C"]  ← only one cut
+    for record in records:
+        addr = str(record.get("address", ""))
+        parts = addr.split(", ", 1)
+        record["address_line1"] = parts[0] if len(parts) > 0 else ""
+        record["address_line2"] = parts[1] if len(parts) > 1 else ""
+
+        # Format amount to always show 2 decimal places: 23.4 → "23,40"
+        # float() → converts Excel value to a number (in case it's stored as string)
+        # :.2f   → Python format: 2 digits after the decimal point
+        # .replace(".", ",") → European format: dot → comma (23.40 → 23,40)
+        try:
+            record["amount"] = f"{float(record['amount']):.2f}".replace(".", ",")
+        except (ValueError, TypeError):
+            pass  # if amount is empty or invalid, leave it as-is
+
+    return records
 
 
 # =============================================================================
@@ -50,10 +79,17 @@ def load_excel_data(filepath):
 # Think of it like a Word mail merge — same template, different data each time.
 
 def render_invoice_html(invoice_data):
-    # TODO: Load the HTML template from templates/invoice.html
-    # TODO: Fill in the placeholders with invoice_data
-    # TODO: Return the completed HTML as a string
-    pass
+    # Environment → Jinja2 engine that knows WHERE to look for templates
+    # FileSystemLoader("templates") → "look in the templates/ folder"
+    env = Environment(loader=FileSystemLoader("templates"))
+
+    # get_template() → loads invoice.html from the templates/ folder
+    template = env.get_template("invoice.html")
+
+    # template.render(**invoice_data) → fills every {{ variable }} in the HTML
+    # **invoice_data unpacks the dictionary:
+    #   {"owner_name": "Ana", "amount": 150} becomes owner_name="Ana", amount=150
+    return template.render(**invoice_data)
 
 
 # =============================================================================
@@ -64,26 +100,103 @@ def render_invoice_html(invoice_data):
 # LIBRARY: weasyprint (or pdfkit — to be decided)
 
 def convert_html_to_pdf(html_string, output_path):
-    # TODO: Take the HTML string
-    # TODO: Convert it to a PDF file
-    # TODO: Save the PDF to output_path (e.g. output/INV-001.pdf)
-    pass
+    # HTML(string=...) → WeasyPrint receives HTML as text (not a file)
+    # base_url="templates" → IMPORTANT: tells WeasyPrint where to find
+    #   images like assets/logo.png (relative paths in the HTML)
+    #   Without this, images would not appear in the PDF.
+    HTML(string=html_string, base_url="templates").write_pdf(output_path)
 
 
 # =============================================================================
-# STEP 4 — MAIN LOOP (runs everything)
+# STEP 4 — GENERATE COMBINED PDF (all invoices in one file)
 # =============================================================================
-# WHY: This is where Steps 1-3 are combined.
+# WHY: The client needs one PDF with all invoices for archiving/printing.
+# HOW: We collect all rendered HTML strings into a list, then join them
+#      into one big HTML document. WeasyPrint converts that into a
+#      multi-page PDF — one invoice per page.
+#
+# page-break-after: always → CSS rule that tells the PDF renderer:
+#   "after this invoice block, start a new page"
+#   Think of it like inserting a manual page break in Word.
+
+def generate_combined_pdf(invoices, output_path):
+    # This list will hold one rendered HTML string per invoice
+    pages = []
+
+    for invoice in invoices:
+        # Render this invoice into HTML (same function as individual PDFs)
+        html = render_invoice_html(invoice)
+
+        # Wrap the invoice HTML in a div with the page-break class.
+        # This div tells WeasyPrint: "each invoice = one page".
+        pages.append(f'<div class="invoice-page">{html}</div>')
+
+    # Join all invoice pages into one HTML document.
+    # The CSS rule page-break-after: always is injected at the top.
+    #
+    # "\n".join(pages) → connects all page strings with a newline between them
+    combined_html = """
+    <html>
+    <head>
+      <meta charset="UTF-8" />
+      <style>
+        /* page-break-after: always → after each invoice div, start a new PDF page */
+        .invoice-page { page-break-after: always; }
+      </style>
+    </head>
+    <body>
+    """ + "\n".join(pages) + """
+    </body>
+    </html>
+    """
+
+    # Convert the big combined HTML into one multi-page PDF
+    HTML(string=combined_html, base_url="templates").write_pdf(output_path)
+    print(f"\n  📄 Combined PDF saved: {output_path}")
+
+
+# =============================================================================
+# STEP 5 — MAIN LOOP (runs everything)
+# =============================================================================
+# WHY: This is where Steps 1-4 are combined.
 #      For each row in Excel → render HTML → save as PDF.
+#      Then all invoices → one combined PDF.
 # HOW: A simple for-loop goes through every invoice one by one.
 
 def main():
-    # TODO: Call load_excel_data() to get all invoices
-    # TODO: Loop through each invoice:
-    #           html = render_invoice_html(invoice)
-    #           convert_html_to_pdf(html, output_path)
-    # TODO: Print a success message when all PDFs are generated
-    pass
+    # Path to the Excel file
+    excel_path = "data/stan_na_dan_klijenti_racuni.xlsx"
+
+    # os.makedirs() → creates the output/ folder if it doesn't exist yet
+    # exist_ok=True → no error if folder already exists
+    os.makedirs("output", exist_ok=True)
+
+    # Step 1: load all invoice rows from Excel
+    invoices = load_excel_data(excel_path)
+    print(f"Loaded {len(invoices)} invoices from Excel.")
+
+    # Step 2 + 3: loop through every invoice row
+    for invoice in invoices:
+        # invoice_number is used as the PDF filename
+        # str() converts number to string (in case Excel stored it as a number)
+        invoice_number = str(invoice.get("invoice_number", "UNKNOWN"))
+
+        # Build the output file path: e.g. output/2026-05-0003.pdf
+        output_path = f"output/{invoice_number}.pdf"
+
+        # Fill the HTML template with this invoice's data
+        html = render_invoice_html(invoice)
+
+        # Convert the filled HTML to a PDF file
+        convert_html_to_pdf(html, output_path)
+
+        print(f"  ✅ Created: {output_path}")
+
+    # After all individual PDFs, generate one combined PDF with all invoices
+    combined_path = "output/combined.pdf"
+    generate_combined_pdf(invoices, combined_path)
+
+    print(f"\nDone. {len(invoices)} PDF(s) saved to output/.")
 
 
 # =============================================================================

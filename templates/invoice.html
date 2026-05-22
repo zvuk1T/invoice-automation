@@ -7,6 +7,22 @@
   <style>
 
     /* ══════════════════════════════════════════════
+       PAGE FORMAT — A4 for PDF output
+       ──────────────────────────────────────────────
+       @page is a special CSS rule read by WeasyPrint
+       (not by browsers). It sets the physical paper
+       size and margins for the generated PDF.
+
+       size: A4          → 210mm × 297mm standard paper
+       margin: 20mm      → 20mm white frame on all 4 sides
+                           (standard professional document margin)
+       ══════════════════════════════════════════════ */
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+
+    /* ══════════════════════════════════════════════
        RESET
        ──────────────────────────────────────────────
        Every browser has its own "default" styles.
@@ -28,7 +44,7 @@
        we change it HERE only. Everything updates automatically.
        ══════════════════════════════════════════════ */
     :root {
-      --primary: #bb0033;       /* main brand color — logo red */
+      --primary: #bb0003;       /* main brand color — logo red */
       --primary-dark: #880024;  /* darker variant — for shadows */
       --primary-light: #f9f0f3; /* pale pink — for backgrounds */
       --ink: #1a0008;           /* near-black with red undertone — for body text */
@@ -51,9 +67,9 @@
       font-size: 13px;
       color: var(--ink);
       background: #fff;
-      padding: 48px;
-      max-width: 760px;
-      margin: 0 auto;
+      /* padding and max-width removed — @page margin handles spacing in PDF.
+         WeasyPrint uses @page margin as the page frame;
+         adding body padding on top would create a double margin. */
     }
 
     /* ══════════════════════════════════════════════
@@ -68,53 +84,52 @@
     .header {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      padding-bottom: 28px;
+      align-items: center;
+      padding-bottom: 20px;
       border-bottom: 3px solid var(--primary);
-      margin-bottom: 32px;
+      margin-bottom: 20px;
     }
 
-    /* Company name — red and bold */
+    /* Logo — height matches company text block (name + 3 lines ≈ 72px) */
+    .logo {
+      max-height: 72px;
+      width: auto;
+      display: block;
+    }
+
+    /* Company name — right side, centered */
     .company-name {
-      font-size: 20px;
+      font-size: 17px;
       font-weight: 700;
       color: var(--primary);
-      letter-spacing: 0.5px; /* slight spacing between letters */
+      letter-spacing: 0.4px;
+      text-align: center;
     }
 
-    /* Address, JIB, bank — smaller grey text below the name */
+    /* Address, JIB, bank — smaller grey text */
     .company-details {
-      margin-top: 6px;
+      margin-top: 5px;
       color: var(--ink-muted);
-      font-size: 12px;
-      line-height: 1.7; /* line spacing = 1.7x the font size */
+      font-size: 11px;
+      line-height: 1.7;
+      text-align: center;
     }
 
-    /* Right side of header — "FAKTURA" title and invoice number */
+    /* Right side of header — company block, centered text */
     .invoice-label {
-      text-align: right; /* text aligned to the right */
+      text-align: center;
     }
 
-    /* Large "FAKTURA" heading */
-    .invoice-label h1 {
-      font-size: 32px;
-      font-weight: 800;
-      color: var(--primary);
-      letter-spacing: 2px;
-      text-transform: uppercase; /* automatically converts to uppercase */
-    }
-
-    /* Line below heading: "Br. fakture: 05/05/2026" */
-    .invoice-label .invoice-number {
-      margin-top: 6px;
-      font-size: 13px;
-      color: #777;
-    }
-
-    /* Only the invoice number value is darker/bolder */
-    .invoice-label .invoice-number span {
-      font-weight: 600;
+    /* "Faktura" title — below red line, above pink bar
+       22px = company name (17px) × 1.333 (Perfect Fourth ratio)
+       Clearly readable as section label, but subordinate to logo */
+    .faktura-title {
+      font-size: 22px;
+      font-weight: 700;
       color: var(--ink);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
     }
 
     /* ══════════════════════════════════════════════
@@ -333,37 +348,80 @@
       margin-top: 4px;
     }
 
+    /* ══════════════════════════════════════════════
+       STAMP + SIGNATURE OVERLAY
+       ──────────────────────────────────────────────
+       .sig-stamp-wrap → invisible box that holds both images.
+       position: relative → tells children: "position yourselves
+                            relative to ME, not to the whole page".
+       height: 90px → enough space for the tallest image (stamp).
+       width: 140px → enough width for both images.
+
+       .stamp-image → positioned at top-left of the wrapper box.
+       position: absolute → takes it out of normal flow;
+                            placed exactly where we tell it.
+
+       .sig-image → also absolute, slightly offset so it
+                    overlaps the stamp naturally (like a real doc).
+       ══════════════════════════════════════════════ */
+    .sig-stamp-wrap {
+      position: relative;
+      display: inline-block; /* shrinks to content size */
+      width: 140px;
+      height: 90px;
+      margin-top: 8px;
+      margin-left: auto;     /* pushes the whole block to the right */
+    }
+
+    .stamp-image {
+      position: absolute;
+      top: 0;
+      right: 0;
+      max-height: 80px;
+      width: auto;
+      opacity: 1;
+    }
+
+    .sig-image {
+      position: absolute;
+      bottom: 0;
+      right: 10px;
+      max-height: 50px;
+      width: auto;
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body>
 
-  <!-- ── HEADER ── -->
+  <!-- ── HEADER (above red line) — logo left, company right ── -->
   <div class="header">
-    <div>
-      <div class="company-name">e-agency Ljubinka Vuković s.p.</div>
+    <div class="header-left">
+      <img src="assets/logo.png" alt="e-agency logo" class="logo" />
+    </div>
+    <div class="invoice-label">
+      <div class="company-name">e-agency LJUBINKA Vuković s.p.</div>
       <div class="company-details">
         Srpska br. 2, 78000 Banja Luka<br>
         JIB: 4509630120009<br>
         NLB Banka: 562-09981279247-92
       </div>
     </div>
-    <div class="invoice-label">
-      <h1>Faktura</h1>
-      <div class="invoice-number">
-        Br. fakture: <span>{{ invoice_number }}</span>
-      </div>
-    </div>
   </div>
+
+  <!-- ── FAKTURA TITLE (below red line) ── -->
+  <div class="faktura-title">Faktura</div>
 
   <!-- ── META ROW ── -->
   <div class="meta-row">
     <div class="meta-item">
-      <label>Datum</label>
-      <span>{{ date }}</span>
+      <label>Br. fakture</label>
+      <span>{{ invoice_number }}</span>
     </div>
     <div class="meta-item">
-      <label>Obračunski period</label>
-      <span>{{ period }}</span>
+      <label>Datum</label>
+      <span>{{ date }}</span>
     </div>
     <div class="meta-item">
       <label>Br. ugovora</label>
@@ -382,7 +440,8 @@
       <div class="recipient-name">{{ owner_name }}</div>
       <div class="recipient-detail">
         {{ apartment_name }}<br>
-        {{ address }}
+        {{ address_line1 }}<br>
+        {{ address_line2 }}
       </div>
     </div>
   </div>
@@ -429,7 +488,11 @@
     </div>
     <div class="footer-signature">
       S poštovanjem,
-      <div class="sig-name">Ljubinka Vuković</div>
+      <div class="sig-stamp-wrap">
+        <img src="assets/pecat.png" alt="Pečat" class="stamp-image" />
+        <img src="assets/potpis.png" alt="Potpis" class="sig-image" />
+      </div>
+      <div class="sig-name">LJUBINKA Vuković</div>
     </div>
   </div>
 
