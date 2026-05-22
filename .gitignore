@@ -24,3 +24,11 @@ data/*.pdf
 data/*.xlsx
 data/APRIL 2026/
 data/*/
+
+# Loose asset files in root — originals live in templates/assets/
+pecat.png
+potpis.png
+potpis.ai
+
+# Template test/draft files
+templates/*.pdf

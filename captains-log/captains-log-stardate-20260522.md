@@ -206,13 +206,56 @@ TEL / Email / Web          S poštovanjem,
 
 ## 📍 WHERE WE STOPPED
 
-- All 12 fixes implemented and confirmed
-- Captain's log updated with all fixes
-- Ready to commit
+- Phase 4 complete — all 12 fixes implemented, committed, PDFs generate correctly
+- Phase 5 planning complete — architecture decided, hosting decided
+- No code written yet for Phase 5
+- Client (Ljubinka) is being consulted — she will continue to receive printed PDFs
+  until the web app is ready (no urgency)
 
-## ⏭️ NEXT STEP
+## ⏭️ NEXT STEP — Phase 5: Flask Web App
 
-- Open a generated PDF from `output/` and verify A4 layout visually
+### What we are building
+A simple Flask web app that replaces running `main.py` locally.
+The client opens a browser, uploads her Excel file, clicks a button, downloads a ZIP with all PDFs.
+
+```
+Client opens browser
+       ↓
+uploads Excel file
+       ↓
+Flask app runs existing pipeline (main.py logic)
+       ↓
+returns ZIP file with all individual PDFs
+       ↓
+client downloads ZIP → opens → prints
+```
+
+### Hosting decision
+- **Platform:** Render.com (free tier)
+- **Reason:** Client uses the tool ~12 times/year. Free tier is sufficient.
+  30-second cold start on first visit is acceptable for monthly use.
+- **GoDaddy (client's hosting):** Shared hosting — Flask does NOT run there. Not an option.
+- **AWS:** Eliminated — overkill, complex billing, steep learning curve for this stage.
+- **Hetzner VPS:** Reconsidered later, when first paying client arrives or app needs 24/7 uptime.
+
+### Files to create
+| File | Purpose |
+|---|---|
+| `app.py` | Flask web server — two routes: GET `/` and POST `/generate` |
+| `templates/upload.html` | Upload page UI — file input + submit button |
+
+### Changes to `main.py`
+- Add one new function: `generate_zip_in_memory(invoices)` → returns ZIP as bytes
+- Existing functions (`main()`, `generate_combined_pdf()`, etc.) **stay untouched**
+- Local pipeline continues to work exactly as before
+
+### Deployment plan
+1. Build and test Flask app locally
+2. Add `render.yaml` or configure via Render.com dashboard
+3. Connect GitHub repo → Render auto-deploys on every push
+4. Send URL to client
+
+---
 
 ---
 
