@@ -66,6 +66,13 @@ At start of each session, read:
 - Update `WHERE WE STOPPED` and `NEXT STEP`
 - Commit the log together with the code changes — never as a separate commit
 
+**Commit Checklist — before every commit, verify:**
+1. Read `guides/git-best-practices.md` — confirm commit message follows the standard
+2. `git status` — no unintended files staged
+3. Captain's log updated for today's date
+4. Commit message format: `"Short imperative summary\n\n- bullet detail\n- bullet detail"`
+5. One commit = one logical unit of work (not "various changes")
+
 ---
 
 ## 💡 Best Practices Rule
