@@ -212,5 +212,23 @@ TEL / Email / Web          S poštovanjem,
 
 ## ⏭️ NEXT STEP
 
-- Git commit: `main.py`, `templates/invoice.html`, `captains-log/captains-log-stardate-20260522.md`
-- Then: test generated PDFs on A4 (open in PDF viewer, check margins and layout)
+- Open a generated PDF from `output/` and verify A4 layout visually
+
+---
+
+## 📖 NEW GUIDE CREATED TODAY
+
+**`guides/how-to-read-terminal-commands.md`**
+
+Created after this question came up during testing:
+```bash
+source venv/bin/activate && python main.py 2>&1 | tail -3
+```
+
+Key concepts documented:
+- `&&` — run next command only if previous succeeded
+- `2>&1` — merge stderr (channel 2) into stdout (channel 1) so pipe captures both normal output and errors
+- `|` — pipe: feed output of one command as input to the next
+- `tail -3` — show only last 3 lines (cuts noise when script prints 41 lines)
+- Mental model: terminal as factory assembly line
+- Common patterns, troubleshooting table
