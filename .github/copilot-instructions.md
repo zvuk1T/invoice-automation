@@ -20,6 +20,17 @@
 
 ---
 
+## 👔 Recruiter Awareness Rule
+This project is part of Data's professional portfolio. Recruiters will review the GitHub repository.
+Every decision must be explainable to a recruiter at a glance:
+- Branch names must reflect purpose, not just technology
+- README must clearly explain: what the project does, what problems were solved, what was learned
+- Commit messages must be descriptive and professional
+- Errors and how they were solved must be documented (captain's log + README)
+- The goal: a recruiter who has never seen this project must understand it within 2 minutes
+
+---
+
 ## 🎯 Project Context
 - Input: Excel file (one row = one invoice)
 - Template: HTML/CSS invoice design

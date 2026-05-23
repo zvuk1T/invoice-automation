@@ -43,7 +43,7 @@ invoice-automation/
 - [x] HTML invoice template
 - [x] Python + Excel integration
 - [x] PDF generation (WeasyPrint)
-- [x] Flask web app (Phase 5, branch: feature/flask-app)
+- [x] Flask web app (Phase 5, branch: `client-web-app`)
 - [x] Combined PDF generation
 - [x] Branded upload page (upload.html)
 - [x] Render.com deployment files (`build.sh`, `render.yaml`)
@@ -55,14 +55,28 @@ invoice-automation/
 
 - **Local:** `python main.py` — generates PDFs in `output/`
 - **Web app:** Flask app (`app.py`) — upload Excel, download ZIP with PDFs
-- **Cloud:** Render.com (free tier) — auto-deploys from `feature/flask-app` branch
+- **Cloud:** Render.com (free tier) — auto-deploys from `client-web-app` branch
+- **Live URL:** https://e-agency-invoice-automation.onrender.com
 
 ---
 
 ## 🧭 Branching Strategy
 
-- `main` — lokalna verzija, pokreće se s `python main.py`, generiše PDFove
-- `feature/flask-app` — web app verzija, deploya na Render.com
+- `main` — local pipeline, runs with `python main.py`, generates PDFs directly to `output/`
+- `client-web-app` — Flask web app, deployed to Render.com, accessible via browser (no Python required)
+
+**Why two branches?** The client needed a browser-based tool (no installation). Rather than break the working local version, a separate branch was created for the web app — each branch serves a different user and use case.
+
+---
+
+## 🐛 Problems Solved
+
+| Problem | Solution |
+|---------|----------|
+| WeasyPrint requires system libraries not available on Render.com by default | Created `build.sh` to install pango, cairo, libffi, libjpeg before pip install |
+| `load_excel_data()` accepted only file paths, Flask sends BytesIO objects | Pandas natively handles both — no code change needed, documented the behaviour |
+| PDF generation writes to disk — incompatible with Render.com free tier (ephemeral filesystem) | Switched to in-memory PDF generation using `BytesIO`, ZIP returned directly in HTTP response |
+| Render.com defaulted to Python 3.14 — potential compatibility risk | Monitored build — no issues found. `.python-version` file available as fallback if needed |
 
 ---
 
