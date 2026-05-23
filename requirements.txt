@@ -1,14 +1,7 @@
-openpyxl   # Read/write Excel files (.xlsx) 📊
-pandas     # Read Excel data into tables, rename columns, manipulate data 📊
-jinja2     # Generate HTML from template + data 🖥️
-weasyprint  # Convert HTML to PDF 📄
-pdfplumber  # Read and inspect existing PDF files (used for reference) 📄
-flask      # Web framework — serves upload page, handles file upload, returns ZIP 🌐
-gunicorn   # Production web server — replaces Flask dev server on Render.com 🚀
-           # Flask's built-in server (python app.py) is for local development only.
-           # Render.com requires a production-grade server like gunicorn.
-           # gunicorn app:app means: "find the file app.py, find the Flask object named app"yxl # Read/write Excel files (.xlsx) 📊
-pandas   # Read Excel data into tables, rename columns, manipulate data �
-jinja2 # Generate HTML from template + data 🖥️
-weasyprint # Convert HTML to PDF 📄
-pdfplumber # Read and inspect existing PDF files (used for reference) �
+openpyxl
+pandas
+jinja2
+weasyprint
+pdfplumber
+flask
+gunicorn

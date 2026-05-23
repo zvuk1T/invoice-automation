@@ -84,20 +84,25 @@ This is the only required change to `main.py`.
 - `render.yaml` — full deployment config: type, branch, buildCommand, startCommand, envVars
 - `app.py` updated — `SECRET_KEY` now reads from environment variable (`os.environ.get`) with local fallback
 
+### requirements.txt cleaned for deployment
+- Removed duplicate and stray lines
+- Only required packages kept (one per line, no version pins)
+- Why: Ensures clean, minimal, and safe dependency install for Render.com
+
 ---
 
 ## 📍 WHERE WE STOPPED
 
+- requirements.txt cleaned and ready for deployment ✅
 - Flask app working locally ✅
 - All Render deployment files created and committed ✅
 - Render.com dashboard setup NOT yet done
+- Awaiting sign out/in and Data’s return
 
 ## ⏭️ NEXT STEP
 
-**Connect GitHub repo to Render.com dashboard:**
-1. Go to render.com → New → Web Service
-2. Connect GitHub repo `zvuk1T/invoice-automation`
-3. Select branch `feature/flask-app`
-4. Render will auto-detect `render.yaml`
-5. Click Deploy — watch build log for errors
-6. Test live URL with real Excel file
+**Test Render deployment:**
+1. Connect GitHub repo to Render.com dashboard
+2. Select branch `feature/flask-app`
+3. Deploy and monitor build log
+4. Test live app with real Excel file
