@@ -17,7 +17,7 @@
 
 # --- IMPORTS ---
 import io                          # built-in: work with files in memory (no disk writes)
-import os                          # built-in: file paths
+import os                          # built-in: file paths, read environment variables
 import zipfile                     # built-in: create ZIP archives in memory
 
 from flask import Flask, render_template, request, send_file, flash, redirect, url_for
@@ -41,8 +41,10 @@ from main import load_excel_data, render_invoice_html
 app = Flask(__name__)
 
 # Secret key is required for flash() messages to work.
-# In production this should be a long random string stored in an env variable.
-app.secret_key = "invoice-automation-secret"
+# os.environ.get() → reads the value from the server's environment variables
+# "invoice-automation-secret" → fallback value used only during local development
+# On Render.com, the real SECRET_KEY is auto-generated and injected by render.yaml
+app.secret_key = os.environ.get("SECRET_KEY", "invoice-automation-secret")
 
 
 # =============================================================================

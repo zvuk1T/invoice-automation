@@ -70,32 +70,34 @@ This is the only required change to `main.py`.
 
 ---
 
+## ✅ ADDITIONAL ACCOMPLISHMENTS (same session)
+
+### Steps 1–5 completed — Flask app fully working locally
+- `load_excel_data()` — documented BytesIO support (pandas handles both natively)
+- `flask` + `gunicorn` added to `requirements.txt`
+- Flask 3.1.3 installed and verified
+- `templates/upload.html` created — branded upload form (red line, #bb0003)
+- Local test passed — uploaded Excel → downloaded `invoices_flask.zip` → PDFs correct ✅
+
+### Render.com deployment files created
+- `build.sh` — installs WeasyPrint system libraries on Render's Linux server (pango, cairo, libffi, libjpeg, etc.) + runs pip install
+- `render.yaml` — full deployment config: type, branch, buildCommand, startCommand, envVars
+- `app.py` updated — `SECRET_KEY` now reads from environment variable (`os.environ.get`) with local fallback
+
+---
+
 ## 📍 WHERE WE STOPPED
 
-- `feature/flask-app` branch created ✅
-- `app.py` created ✅
-- `load_excel_data()` not yet adapted for BytesIO
-- Flask not yet installed
-- `templates/upload.html` not yet created
+- Flask app working locally ✅
+- All Render deployment files created and committed ✅
+- Render.com dashboard setup NOT yet done
 
 ## ⏭️ NEXT STEP
 
-**Step 1 of 6 — Adapt `load_excel_data()` in `main.py`**
-
-Change the function signature so it accepts both:
-- `filepath` as a string (local use, `python main.py`)
-- `filepath` as a `BytesIO` object (Flask upload)
-
-```python
-# The fix is one line — pandas read_excel() already handles both:
-df = pd.read_excel(filepath, sheet_name="Sheet2")
-# filepath can be a path string OR a BytesIO object — pandas handles both natively.
-# Only the type hint / comment needs updating. No logic change needed.
-```
-
-**Remaining steps:**
-2. Add `flask` to `requirements.txt`
-3. Install Flask (`pip install flask`)
-4. Create `templates/upload.html`
-5. Test locally (`python app.py`)
-6. Deploy to Render.com
+**Connect GitHub repo to Render.com dashboard:**
+1. Go to render.com → New → Web Service
+2. Connect GitHub repo `zvuk1T/invoice-automation`
+3. Select branch `feature/flask-app`
+4. Render will auto-detect `render.yaml`
+5. Click Deploy — watch build log for errors
+6. Test live URL with real Excel file

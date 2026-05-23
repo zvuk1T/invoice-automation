@@ -1,0 +1,81 @@
+# =============================================================================
+# render.yaml — Render.com deployment configuration
+# =============================================================================
+# WHAT THIS FILE DOES:
+#   Tells Render.com everything it needs to know to deploy our Flask app:
+#   - What type of service it is (web app)
+#   - Which branch to deploy from
+#   - How to build the app (run build.sh)
+#   - How to start the app (run gunicorn)
+#   - What environment variables to set
+#
+# HOW RENDER USES THIS FILE:
+#   When you push code to GitHub, Render reads this file automatically
+#   and follows the instructions. No manual steps in the dashboard needed.
+#
+# FILE FORMAT: YAML
+#   YAML = "YAML Ain't Markup Language"
+#   It uses indentation (spaces) to show structure — like Python.
+#   Key: value pairs separated by a colon.
+#   Lists start with a dash (-).
+#   ⚠️ NEVER use tabs — only spaces. YAML will break silently with tabs.
+# =============================================================================
+
+services:
+  # "services" → a list of services Render should create
+  # We have one service: a web app
+
+  - type: web
+    # type: web → "this is a web service — it listens for HTTP requests"
+    # Other types exist (worker, cron) but we need a web server.
+
+    name: invoice-automation
+    # name → how this service will appear in the Render dashboard
+    # Can be anything — this is just a label.
+
+    runtime: python
+    # runtime: python → "use a Python environment to run this service"
+    # Render supports: python, node, ruby, go, rust, docker, etc.
+
+    branch: feature/flask-app
+    # branch → which GitHub branch to deploy from
+    # Render watches THIS branch — every git push here triggers a new deploy.
+    # Our main branch (local pipeline) is never touched by Render.
+
+    buildCommand: "./build.sh"
+    # buildCommand → the command Render runs ONCE to prepare the app
+    # "./build.sh" → run our build script (installs system libs + pip packages)
+    # This runs before the app starts — think of it as setup/installation phase.
+    # Mental model: buildCommand = "set up the kitchen before cooking" 🍳
+
+    startCommand: "gunicorn app:app"
+    # startCommand → the command Render runs to START the web server
+    # gunicorn     → the production web server (installed via requirements.txt)
+    # app:app      → "find the file named app.py, find the Flask object named app"
+    #                  first "app"  = filename (app.py)
+    #                  second "app" = the variable name in app.py: app = Flask(__name__)
+    # Mental model: startCommand = "open the restaurant for customers" 🚪
+
+    plan: free
+    # plan: free → use Render's free tier
+    # Free tier limitations:
+    #   - App "sleeps" after 15 minutes of inactivity
+    #   - First request after sleep takes 30-60 seconds (cold start)
+    #   - Acceptable for ~12 uses per year (our client's usage pattern)
+
+    envVars:
+      # envVars → environment variables set on the server
+      # These are like settings that the app can read at runtime.
+      # We do NOT hardcode secrets in code — we set them here instead.
+
+      - key: PYTHON_VERSION
+        value: "3.12.0"
+        # Tells Render which Python version to use.
+        # Must match what we develop with locally to avoid surprises.
+
+      - key: SECRET_KEY
+        generateValue: true
+        # SECRET_KEY → used by Flask for flash() messages and session security
+        # generateValue: true → Render generates a random secure value automatically
+        # We never see or store this key — Render manages it.
+        # This is safer than hardcoding a key in app.py or this file.
