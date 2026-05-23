@@ -7,7 +7,7 @@
 ## 📋 SESSION SUMMARY
 
 **Session Date:** 23.05.2026
-**Session Status:** 🔄 In progress — Phase 5 started
+**Session Status:** ✅ Complete — Phase 5 deployed and live
 **Current Phase:** Phase 5 — Flask Web App (in progress)
 
 ---
@@ -99,10 +99,14 @@ This is the only required change to `main.py`.
 - Render.com dashboard setup NOT yet done
 - Awaiting sign out/in and Data’s return
 
+## 📍 WHERE WE STOPPED
+
+- Flask app live at `https://e-agency-invoice-automation.onrender.com` ✅
+- Upload Excel → download ZIP of PDFs — tested and working ✅
+- Python 3.14.3 on Render — no issues encountered ✅
+- Phase 5 complete
+
 ## ⏭️ NEXT STEP
 
-**Test Render deployment:**
-1. Connect GitHub repo to Render.com dashboard
-2. Select branch `feature/flask-app`
-3. Deploy and monitor build log
-4. Test live app with real Excel file
+- Await client feedback and minor adjustments
+- If needed: add `.python-version` file with `3.12.3` to pin Python version
