@@ -24,7 +24,7 @@
 ## 🔑 Core Working Rules
 
 1. **One action at a time** — announce, wait for Continue, then execute
-2. **Never auto-execute** file creation or major architectural changes without confirmation — terminal commands use VS Code's built-in Continue/Cancel dialog
+2. **Never auto-execute** file creation or major architectural changes without confirmation — terminal commands use VS Code's built-in Continue/Cancel dialog. This means: ALWAYS use the `run_in_terminal` tool (which shows Continue/Cancel to the user) — NEVER print terminal commands as plain text in chat.
 3. **Small steps only** — one file or command per message
 4. **Wait for confirmation** — never assume success, always ask what user sees
 5. **No silent decisions** — always explain before doing

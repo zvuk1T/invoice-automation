@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<!--
+  upload.html — Invoice Automation Web App
+  =========================================
+  WHAT THIS PAGE DOES:
+    Shows a simple file upload form.
+    The user selects an Excel file and clicks "Generiši fakture".
+    The form submits to POST /generate in app.py.
+    The browser then downloads a ZIP file with all PDFs.
+
+  HOW IT CONNECTS TO app.py:
+    <form action="/generate" method="POST" enctype="multipart/form-data">
+      action="/generate"          → sends data to the /generate route in app.py
+      method="POST"               → POST request (we are sending data, not just reading)
+      enctype="multipart/form-data" → REQUIRED for file uploads — tells the browser
+                                      to send the file as binary data, not plain text
+
+    <input name="excel_file">
+      name="excel_file"           → must match request.files["excel_file"] in app.py
+-->
+<html lang="bs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Generisanje faktura — e-agency Ljubinka Vuković</title>
+
+  <style>
+    /* ── Reset & base ─────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --primary:   #bb0003;   /* brand red — same as invoice.html */
+      --ink:       #1a1a1a;
+      --muted:     #666;
+      --bg:        #f5f5f5;
+      --white:     #ffffff;
+      --radius:    8px;
+      --shadow:    0 2px 16px rgba(0,0,0,0.10);
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    /* ── Card ─────────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    /* ── Header ───────────────────────────────────────── */
+    .brand-line {
+      display: block;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    /* ── File input ───────────────────────────────────── */
+    label.file-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+
+    input[type="file"] {
+      display: block;
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid #ddd;
+      border-radius: var(--radius);
+      font-size: 13px;
+      color: var(--ink);
+      background: var(--white);
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    input[type="file"]:hover,
+    input[type="file"]:focus {
+      border-color: var(--primary);
+      outline: none;
+    }
+
+    .file-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      margin-bottom: 28px;
+    }
+
+    /* ── Submit button ────────────────────────────────── */
+    button[type="submit"] {
+      width: 100%;
+      padding: 13px;
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      border-radius: var(--radius);
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    button[type="submit"]:hover {
+      background: #950002;
+    }
+
+    button[type="submit"]:active {
+      opacity: 0.85;
+    }
+
+    /* ── Flash messages (errors) ──────────────────────── */
+    .flash-list {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+
+    .flash-list li {
+      background: #fff3f3;
+      border: 1px solid #f5c0c0;
+      border-left: 4px solid var(--primary);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      color: var(--primary);
+    }
+
+    /* ── Loading state ────────────────────────────────── */
+    /* When the form is submitted, show a loading message.
+       JavaScript adds class "loading" to the button. */
+    .loading-hint {
+      display: none;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    /* ── Footer ───────────────────────────────────────── */
+    footer {
+      margin-top: 32px;
+      font-size: 11px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <!-- Brand accent line (same red as invoice header) -->
+    <span class="brand-line"></span>
+
+    <h1>Generisanje faktura</h1>
+    <p class="subtitle">e-agency Ljubinka Vuković s.p.</p>
+
+    <!-- Flash messages — shown when app.py calls flash("...") -->
+    <!--
+      get_flashed_messages() → Jinja2 function that returns any messages
+      that app.py sent via flash("some error text").
+      Messages are shown once and then cleared automatically.
+    -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class="flash-list">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+
+    <!--
+      FORM — sends the Excel file to POST /generate in app.py
+      enctype="multipart/form-data" → REQUIRED for file uploads
+    -->
+    <form
+      action="/generate"
+      method="POST"
+      enctype="multipart/form-data"
+      id="upload-form"
+    >
+      <label class="file-label" for="excel_file">Excel fajl s fakturama</label>
+
+      <!--
+        name="excel_file" → must match request.files["excel_file"] in app.py
+        accept=".xlsx"    → browser file picker shows only .xlsx files
+      -->
+      <input
+        type="file"
+        id="excel_file"
+        name="excel_file"
+        accept=".xlsx"
+        required
+      />
+
+      <p class="file-hint">Prihvata se samo .xlsx format (Excel 2007 ili noviji)</p>
+
+      <button type="submit" id="submit-btn">
+        Generiši fakture
+      </button>
+
+      <p class="loading-hint" id="loading-hint">
+        ⏳ Generisanje u toku — molimo sačekajte...
+      </p>
+    </form>
+
+  </div>
+
+  <footer>
+    Invoice Automation Tool · Phase 5 · feature/flask-app
+  </footer>
+
+  <script>
+    // When the form is submitted, change the button text so the user
+    // knows something is happening (PDF generation takes a few seconds).
+    document.getElementById("upload-form").addEventListener("submit", function () {
+      var btn = document.getElementById("submit-btn");
+      var hint = document.getElementById("loading-hint");
+      btn.textContent = "Generisanje...";
+      btn.disabled = true;
+      hint.style.display = "block";
+    });
+  </script>
+
+</body>
+</html>

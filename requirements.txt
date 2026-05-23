@@ -1,4 +1,9 @@
-openpyxl # Read/write Excel files (.xlsx) 📊
+openpyxl   # Read/write Excel files (.xlsx) 📊
+pandas     # Read Excel data into tables, rename columns, manipulate data 📊
+jinja2     # Generate HTML from template + data 🖥️
+weasyprint  # Convert HTML to PDF 📄
+pdfplumber  # Read and inspect existing PDF files (used for reference) 📄
+flask      # Web framework — serves upload page, handles file upload, returns ZIP 🌐yxl # Read/write Excel files (.xlsx) 📊
 pandas   # Read Excel data into tables, rename columns, manipulate data �
 jinja2 # Generate HTML from template + data 🖥️
 weasyprint # Convert HTML to PDF 📄

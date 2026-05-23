@@ -175,6 +175,61 @@ git add .github/copilot-instructions.md && git commit -m "chore: add Spock voice
 
 ---
 
+## 🌿 BRANCHING — Rad s granama
+
+### Zašto koristimo brancheve?
+Branch = paralelna verzija projekta.
+Koristimo ih kada želimo raditi na nečem novom, a da ne diramo verziju koja već radi.
+
+**Primjer iz ovog projekta:**
+- `main` branch → lokalna verzija, pokreće se s `python main.py`, generiše PDFove
+- `feature/flask-app` branch → web app verzija, deploya na Render.com
+
+### Napravi novi branch i odmah se prebaci na njega
+```bash
+git checkout -b feature/flask-app
+```
+- `git checkout` → "prebaci me na drugi branch" 🔀
+- `-b` → ali prvo **napravi** novi branch (`b` = branch)
+- `feature/flask-app` → naziv novog brancha
+
+Mental model:
+```
+git checkout          →  "prebaci me na postojeći branch"
+git checkout -b       →  "napravi novi + prebaci me odmah"  🌿
+```
+
+### Provjeri na kojem si branchu
+```bash
+git branch
+```
+- Zvjezdica `*` pokazuje aktivni branch
+- Primjer outputa:
+  ```
+  * feature/flask-app
+    main
+  ```
+
+### Pushaj novi branch na GitHub
+```bash
+git push -u origin feature/flask-app
+```
+- `-u origin feature/flask-app` → "povezi ovaj lokalni branch s GitHubom" ☁️
+- Nakon ovoga, svaki sljedeći `git push` na ovom branchu radi bez `-u`
+
+### Prebaci se između brancheva
+```bash
+git checkout main
+git checkout feature/flask-app
+```
+
+### Kada NE mergeati brancheve
+Ako dvije verzije trebaju živjeti trajno (npr. lokalna vs. web app) — branch ne mora nikad biti mergeovan u `main`. Svaki branch može biti trajna, samostalna verzija projekta.
+
+**Trošak:** Bugfix u dijeljenom kodu (npr. `main.py`) moraš ručno primijeniti na oba brancha.
+
+---
+
 ## ⚠️ ČESTI PROBLEMI I RJEŠENJA
 
 *(Ovo popunjavamo kada naiđemo na probleme)*

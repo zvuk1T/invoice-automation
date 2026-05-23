@@ -35,6 +35,11 @@ def load_excel_data(filepath):
     # pd.read_excel() → opens the Excel file and reads it as a DataFrame
     # DataFrame = like a table in memory (rows and columns)
     # sheet_name="Sheet2" → our data lives on the second sheet
+    #
+    # IMPORTANT: filepath can be either:
+    #   - a string path: "data/stan_na_dan_klijenti_racuni.xlsx"  ← local use (main.py)
+    #   - a BytesIO object: file uploaded via Flask, living in RAM ← web app (app.py)
+    # pandas read_excel() handles both natively — no extra code needed.
     df = pd.read_excel(filepath, sheet_name="Sheet2")
 
     # df.to_dict("records") → converts each row into a dictionary
