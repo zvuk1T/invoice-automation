@@ -37,7 +37,7 @@ services:
     # runtime: python → "use a Python environment to run this service"
     # Render supports: python, node, ruby, go, rust, docker, etc.
 
-    branch: feature/flask-app
+    branch: client-web-app
     # branch → which GitHub branch to deploy from
     # Render watches THIS branch — every git push here triggers a new deploy.
     # Our main branch (local pipeline) is never touched by Render.
