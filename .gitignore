@@ -19,6 +19,9 @@ venv/
 # Personal session memory — local only, not for GitHub
 old_friends_folder/
 
+# Chat exports — private, never commit
+captains-log/chat-exports/
+
 # Customer data — GDPR/privacy protection, never upload to GitHub
 data/*.pdf
 data/*.xlsx
