@@ -97,7 +97,7 @@ Now one commit to `invoice.html` updates both the local and web paths at once â€
 there is nothing to port.
 
 - [x] Invoice changes reach both paths automatically (single `main` branch)
-- [ ] Captain's log updated with final summary (per round)
+- [x] Captain's log updated (consolidation documented â€” PART 3, Stardate 20260620)
 
 ---
 

@@ -393,3 +393,91 @@ consolidation — note that when closing the tracking file.
 ---
 
 *Logged by Spock · PART 2 · Stardate 20260620 · single-branch `main`, methodology v2 shipped*
+
+---
+---
+
+# 🚀 SESSION PART 3 — STEP 7 complete (consolidation documented)
+
+> Added later the same day (20260620). PART 3 is the **current truth**. It closes
+> the documentation work that PART 2 left as "next". Read this first.
+
+---
+
+## 🧭 READ THIS FIRST — Next-session quick start (supersedes PART 2's quick start)
+
+**STEP 7 is DONE.** The branch consolidation is now fully documented and everything
+is pushed. The next job is the **actual client work: invoice changes #2–#7.**
+
+**Before doing anything, read these in order:**
+1. `client-revisions-round-1.md` — the master change list (the brain for #2–#7)
+2. `templates/invoice.html` — the ONLY file we edit for the client changes
+3. This log — **PART 3 first** (current state), then PART 1 § "THE 7 CHANGES" for
+   the per-change technical notes (still valid)
+
+Then announce **change #2** (bold the company details block), STOP, wait for Data's `ok`.
+
+---
+
+## ✅ WHAT WE ACCOMPLISHED — PART 3 (STEP 7, all four sub-steps)
+
+1. **Updated `.github/copilot-instructions.md`** — rewrote the "🌿 Branch Structure"
+   section from the old two-branch model to the **single-branch `main`** model.
+2. **Updated `client-revisions-round-1.md`** — header branch → `main`; architecture
+   map "branches" → "paths" (local vs web); work-process step 7 (no porting); change
+   #1 status ⬜ → ✅; § 5 rewritten (shared code handled by single branch); progress
+   journal row added. *(Committed `fb07862`.)*
+3. **Verified the captain's log** (PART 2) was committed + pushed (`b5d8522`).
+4. **Wrote the branch-consolidation playbook in TWO files:**
+   - Recruiter version → `invoice-automation/guides/git-branch-consolidation.md`
+     *(committed `5e0d1b6`)*
+   - Detailed/educational version → `know-thyself-data/docs/git-branch-consolidation.md`
+     *(committed `be7b3e8`)*
+5. **Pushed both repos** to GitHub — both `main` branches in sync with `origin`.
+
+---
+
+## 🌱 GIT STATE (end of PART 3)
+
+- **invoice-automation:** branch `main`, synced with `origin/main`. Last commit
+  `5e0d1b6` (recruiter playbook). History this session: `fb07862` (doc alignment) →
+  `5e0d1b6` (playbook). Change #1 (`ec41192`) still in history. Working tree clean.
+- **know-thyself-data:** branch `main`, synced with `origin/main`. Last commit
+  `be7b3e8` (detailed playbook). Working tree clean.
+- Both repos fully pushed. Nothing uncommitted.
+
+---
+
+## ⏭️ NEXT STEP — invoice changes #2–#7 (the real client work)
+
+STEP 7 (documentation) is closed. Return to the **client's aesthetic changes**.
+Work order (from PART 1 § "RECOMMENDED WORK ORDER"), all in `templates/invoice.html`:
+
+1. **#2** — bold the company details block (`.company-details` → heavier `font-weight`) ← start here
+2. **#3** — meta row background pale pink → light gray
+3. **#4a** — table "Obračunski period" label (⚠️ confirm wording with client)
+4. **#4b** — round the table corners (⚠️ `border-collapse` CSS gotcha — see PART 1)
+5. **#5** — outline lines → neutral gray (⚠️ our design push-back, confirm with client)
+6. **#7** — signature/stamp redesign (most complex — do last)
+
+Per-change technical notes live in **PART 1 § "THE 7 CHANGES"** — still accurate.
+After implementing, run the **visual PDF test** (PART 1 § "HOW TO TEST"): generate
+`output/` PDFs locally and have Data compare against the client's photo. Change #1's
+visual test is also still pending — fold it into the first test run.
+
+Commit after each change (or logical group) with a descriptive message.
+
+---
+
+## 📏 RULES TO REMEMBER (carried from PART 1 & 2, still active)
+
+- Address the user as **"Data"**. Confirmation Rule: announce → STOP → wait for `ok`.
+- Privacy: never commit anything in `data/`. `git status` before staging; stage
+  explicitly; never `git add .`.
+- Terminals: always use the run-in-terminal tool. Disable pagers (`git --no-pager`).
+- Docs in English; conversation with Data in Serbian/Bosnian.
+- **Single branch:** `main` is the only branch — one commit updates both paths.
+
+---
+
+*Logged by Spock · PART 3 · Stardate 20260620 · STEP 7 complete, both repos pushed, ready for client changes #2–#7*
