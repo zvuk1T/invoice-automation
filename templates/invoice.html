@@ -44,12 +44,24 @@
        we change it HERE only. Everything updates automatically.
        ══════════════════════════════════════════════ */
     :root {
+      /* Brand */
       --primary: #bb0003;       /* main brand color — logo red */
       --primary-dark: #880024;  /* darker variant — for shadows */
-      --primary-light: #f9f0f3; /* pale pink — for backgrounds */
-      --ink: #1a0008;           /* near-black with red undertone — for body text */
-      --ink-muted: #555;        /* grey — for secondary text */
-      --border: #e8d0d8;        /* pink-grey — for card borders */
+      --primary-light: #f9f0f3; /* pale pink — legacy, no longer used for fills */
+
+      /* Text scale */
+      --ink: #1a0008;           /* near-black with red undertone — primary text */
+      --ink-muted: #555;        /* secondary text */
+      --ink-soft: #8c8c92;      /* tertiary text — labels & captions (consolidates #999/#888) */
+
+      /* Neutral surfaces & lines — 3-step system (consolidates 6 ad-hoc grays) */
+      --surface: #f4f4f6;       /* panel backgrounds (meta row) */
+      --line: #e6e6e9;          /* hairline dividers inside panels */
+      --border: #cfcfd4;        /* visible card borders */
+
+      /* Design tokens — one value, used everywhere */
+      --radius: 8px;            /* corner radius for all cards */
+      --gap: 32px;              /* standard vertical rhythm between sections */
     }
 
     /* ══════════════════════════════════════════════
@@ -106,11 +118,12 @@
       text-align: center;
     }
 
-    /* Address, JIB, bank — smaller grey text */
+    /* Address, JIB, bank — smaller grey text, extra-bold for visibility */
     .company-details {
       margin-top: 5px;
       color: var(--ink-muted);
       font-size: 11px;
+      font-weight: 800;   /* change #2: client asked to "boldovati" — bumped 600→800 for stronger weight */
       line-height: 1.7;
       text-align: center;
     }
@@ -120,16 +133,18 @@
       text-align: center;
     }
 
-    /* "Faktura" title — below red line, above pink bar
-       22px = company name (17px) × 1.333 (Perfect Fourth ratio)
-       Clearly readable as section label, but subordinate to logo */
+    /* "Faktura" title — below the bordo brand line, above the meta row.
+       22px = company name (17px) × 1.333 (Perfect Fourth ratio).
+       Zone E: sits closer to the brand line above (the header's 20px margin)
+       than to the body below (var(--gap) = 32px), so it reads as part of the
+       masthead and joins the consistent section rhythm instead of floating. */
     .faktura-title {
       font-size: 22px;
       font-weight: 700;
       color: var(--ink);
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-bottom: var(--gap); /* zone E: tokenized to the section rhythm */
     }
 
     /* ══════════════════════════════════════════════
@@ -142,9 +157,9 @@
     .meta-row {
       display: flex;
       justify-content: space-between;
-      margin-bottom: 32px;
-      background: var(--primary-light); /* pale pink background */
-      border-radius: 8px; /* rounded corners */
+      margin-bottom: var(--gap);
+      background: var(--surface); /* token: neutral panel surface */
+      border-radius: var(--radius);
       padding: 16px 20px;
     }
 
@@ -154,7 +169,7 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #999; /* grey color for labels */
+      color: var(--ink-soft); /* token: tertiary label text */
       margin-bottom: 4px;
     }
 
@@ -171,7 +186,7 @@
        Bordered card — owner name, apartment, address.
        ══════════════════════════════════════════════ */
     .recipient-section {
-      margin-bottom: 32px;
+      margin-bottom: var(--gap);
     }
 
     /* Small heading above the card: "FAKTURISANO" */
@@ -179,15 +194,15 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #999;
+      color: var(--ink-soft);
       margin-bottom: 8px;
     }
 
     /* The card itself with a border */
     .recipient-card {
       background: #fff;
-      border: 1.5px solid var(--border); /* thin pink-grey line */
-      border-radius: 8px;
+      border: 1.5px solid var(--border); /* token: visible card border */
+      border-radius: var(--radius);
       padding: 16px 20px;
     }
 
@@ -213,17 +228,20 @@
        between table cells.
        ══════════════════════════════════════════════ */
     .items-section {
-      margin-bottom: 32px;
+      margin-bottom: var(--gap);
     }
 
     table {
       width: 100%; /* table takes full width */
-      border-collapse: collapse;
+      border-collapse: separate; /* 'separate' (not collapse) so border-radius is honored */
+      border-spacing: 0;         /* remove the gaps that 'separate' introduces */
+      border: 1px solid var(--border); /* Option A: outline so the rounded card is visible */
+      border-radius: var(--radius);    /* Option A: round the whole table as a card */
+      overflow: hidden;                /* clip the red header fill to the rounded corners */
     }
 
     /* Table header row — red background, white text */
     thead tr {
-      background: var(--primary);
       color: #fff;
     }
 
@@ -234,22 +252,24 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       font-weight: 600;
+      background: var(--primary); /* fill on the cells so rounded corners clip the red */
     }
 
-    /* Table rows — thin line below each row */
-    tbody tr {
-      border-bottom: 1px solid #f0f0f5;
-    }
+    /* Option A: round the header's TOP corners (overflow:hidden handles the visual clip) */
+    thead th:first-child { border-top-left-radius: var(--radius); }
+    thead th:last-child  { border-top-right-radius: var(--radius); }
 
-    /* Last row has no bottom line */
-    tbody tr:last-child {
-      border-bottom: none;
-    }
-
+    /* Table rows — hairline divider below each row (on cells, required in 'separate' mode) */
     tbody td {
+      border-bottom: 1px solid var(--line); /* token: hairline divider */
       padding: 13px 14px;
       font-size: 13px;
-      color: #333;
+      color: var(--ink-muted); /* token: body text */
+    }
+
+    /* Last row has no bottom line (the card border closes it) */
+    tbody tr:last-child td {
+      border-bottom: none;
     }
 
     /* ══════════════════════════════════════════════
@@ -262,14 +282,14 @@
     .total-section {
       display: flex;
       justify-content: flex-end; /* push to the right */
-      margin-bottom: 40px;
+      margin-bottom: 10px;       /* zone A: keep the PDV note close, as the total's caption */
     }
 
     /* Red card with the amount */
     .total-box {
       background: var(--primary);
       color: #fff;
-      border-radius: 8px;
+      border-radius: var(--radius);
       padding: 18px 28px;
       min-width: 200px;
       text-align: right;
@@ -301,94 +321,118 @@
 
     /* ══════════════════════════════════════════════
        NOTE — VAT exemption notice
+       ──────────────────────────────────────────────
+       Zone A: caption tied to the Total (no own divider line).
+       Right-aligned under the amount it explains, so the only
+       horizontal rule in this area is the single footer line.
        ══════════════════════════════════════════════ */
     .note {
       font-size: 11px;
-      color: #999;
+      color: var(--ink-soft);
       font-style: italic; /* italic text */
-      margin-bottom: 40px;
-      padding-top: 8px;
-      border-top: 1px solid #eee;
+      text-align: right;  /* sit under the right-aligned Total box */
+      /* zone B: no own bottom margin — the footer's padding-top (var(--gap))
+         supplies the single rhythm unit, so the note→footer gap is 32px
+         (one step) instead of a doubled 64px hole. */
     }
 
     /* ══════════════════════════════════════════════
        FOOTER — contact info and signature
        ──────────────────────────────────────────────
-       Same as header — flex with space-between:
-       contact info goes left, signature goes right.
-       align-items: flex-end → aligns both to the BOTTOM
+       Zone A/D: the invoice now speaks in soft cards + whitespace.
+       The old top border was the last "hard line" in that language and
+       echoed the 3px brand line up top — so it is removed and the close
+       is made with generous whitespace instead ("vrh viče, dno šapuće").
+
+       align-items: flex-start → both columns start from the SAME top line,
+       reading as two tidy columns (Zone D balance) instead of the contact
+       block hanging at the bottom of the taller signature block.
        ══════════════════════════════════════════════ */
     .footer {
-      border-top: 1.5px solid var(--border);
-      padding-top: 20px;
+      margin-top: 3cm;         /* Data's request: push the whole footer (contact + signature + stamp) ~3cm lower */
+      padding-top: var(--gap); /* breathing room above the signature band */
       display: flex;
       justify-content: space-between;
-      align-items: flex-end; /* align to bottom */
+      align-items: flex-start; /* zone D: align both columns to the top */
     }
 
     /* Contact details — left side */
     .footer-contact {
       font-size: 11px;
-      color: #888;
+      color: var(--ink-soft); /* token: tertiary text */
       line-height: 1.8;
     }
 
-    /* Signature block — right side */
+    /* Signature block — right side, content centered (change #7).
+       position: relative → anchor for the absolutely-positioned stamp overlay. */
     .footer-signature {
-      text-align: right;
+      position: relative;
+      width: 240px;
+      margin-left: auto;   /* push the whole block to the right */
+      text-align: center;
       font-size: 12px;
       color: #555;
     }
 
-    /* Signer name — red and bold */
+    /* "S poštovanjem," closing line — sits directly above the signature (change #7) */
+    .footer-signature .sig-closing {
+      margin-bottom: 2px;
+    }
+
+    /* Handwritten signature (potpis) — now in NORMAL FLOW, tight under the closing,
+       so "S poštovanjem," sits right above it like a real letter (change #7) */
+    .footer-signature .sig-image {
+      display: block;
+      max-height: 50px;
+      width: auto;
+      margin: 0 auto;       /* center horizontally */
+      position: relative;
+      z-index: 1;           /* below the stamp */
+    }
+
+    /* Horizontal signature line — signature sits above, name below (change #7) */
+    .footer-signature .sig-line {
+      border-top: 1.5px solid var(--ink-muted);
+      width: 100%;
+      margin: 2px auto 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Signer name — bordo, bold, UPPERCASE, below the line (change #7) */
     .footer-signature .sig-name {
       font-weight: 700;
       font-size: 14px;
       color: var(--primary);
-      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+      z-index: 1;
     }
 
     /* ══════════════════════════════════════════════
-       STAMP + SIGNATURE OVERLAY
+       STAMP OVERLAY (pečat) — change #7
        ──────────────────────────────────────────────
-       .sig-stamp-wrap → invisible box that holds both images.
-       position: relative → tells children: "position yourselves
-                            relative to ME, not to the whole page".
-       height: 90px → enough space for the tallest image (stamp).
-       width: 140px → enough width for both images.
+       A real rubber stamp is struck LAST, over everything.
+       Source: Wikipedia "Rubber stamp" — formal documents are
+       "rubber-stamped over the signature as additional evidence
+       of authenticity."
 
-       .stamp-image → positioned at top-left of the wrapper box.
-       position: absolute → takes it out of normal flow;
-                            placed exactly where we tell it.
-
-       .sig-image → also absolute, slightly offset so it
-                    overlaps the stamp naturally (like a real doc).
+       So the stamp is position: absolute (it does NOT reserve
+       space — the closing + signature stay tight together) and
+       floats over the signature + line + name, slightly rotated
+       and semi-transparent, like real stamp ink.
        ══════════════════════════════════════════════ */
-    .sig-stamp-wrap {
-      position: relative;
-      display: inline-block; /* shrinks to content size */
-      width: 140px;
-      height: 90px;
-      margin-top: 8px;
-      margin-left: auto;     /* pushes the whole block to the right */
-    }
-
     .stamp-image {
       position: absolute;
-      top: 0;
-      right: 0;
-      max-height: 80px;
+      top: 20px;                 /* just under "S poštovanjem," — over the signature */
+      left: 50%;
+      transform: translateX(-50%) rotate(-8deg); /* centered, tilted like a real stamp */
+      max-height: 90px;
       width: auto;
-      opacity: 1;
-    }
-
-    .sig-image {
-      position: absolute;
-      bottom: 0;
-      right: 10px;
-      max-height: 50px;
-      width: auto;
-      opacity: 1;
+      opacity: 0.82;             /* translucent ink — signature shows through */
+      z-index: 2;                /* struck on top of everything */
+      pointer-events: none;
     }
 
   </style>
@@ -452,7 +496,7 @@
       <thead>
         <tr>
           <th>Opis usluge</th>
-          <th>Period</th>
+          <th>Obračunski period</th>
           <th style="text-align:right;">Iznos (KM)</th>
         </tr>
       </thead>
@@ -487,12 +531,12 @@
       Web: www.checkin-balkan.com
     </div>
     <div class="footer-signature">
-      S poštovanjem,
-      <div class="sig-stamp-wrap">
-        <img src="assets/pecat.png" alt="Pečat" class="stamp-image" />
-        <img src="assets/potpis.png" alt="Potpis" class="sig-image" />
-      </div>
-      <div class="sig-name">LJUBINKA Vuković</div>
+      <div class="sig-closing">S poštovanjem,</div>
+      <img src="assets/potpis.png" alt="Potpis" class="sig-image" />
+      <div class="sig-line"></div>
+      <div class="sig-name">Ljubinka Vuković</div>
+      <!-- Pečat — struck last, floats over the signature (change #7) -->
+      <img src="assets/pecat.png" alt="Pečat" class="stamp-image" />
     </div>
   </div>
 
