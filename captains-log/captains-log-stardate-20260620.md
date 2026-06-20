@@ -222,3 +222,174 @@ test → commit. Proceed through the work order above.
 ---
 
 *Logged by Spock · Mission Specialist: Lieutenant Commander Data (zvuk1T) · Stardate 20260620*
+
+---
+---
+
+# 🚀 SESSION PART 2 — Branch Consolidation + Methodology v2
+
+> Added later the same day (20260620). **PART 1 above is the historical record of
+> the morning session. Several things in it are now OUTDATED.** Where PART 1 and
+> PART 2 disagree, **PART 2 is the current truth.** Read this part first.
+
+---
+
+## 🧭 READ THIS FIRST — Next-session quick start (supersedes PART 1's quick start)
+
+The next session resumes in a **NEW chat** (this one was closed to avoid context
+overflow). The job waiting for you is **invoice STEP 7 — documentation** (details
+at the very bottom: "⏭️ NEXT STEP").
+
+**Before doing anything, read these in order:**
+1. This captain's log — **PART 2 first**, then PART 1 for the 7-change technical notes
+2. `client-revisions-round-1.md` — the master change list (still the brain for changes #2–#7)
+3. `templates/invoice.html` — the file we edit for the client changes
+
+Then announce the first sub-step of STEP 7, STOP, wait for Data's `ok`.
+
+---
+
+## ⚠️ WHAT CHANGED SINCE PART 1 — read before trusting anything above
+
+- **The `client-web-app` branch NO LONGER EXISTS.** We consolidated everything into
+  a single `main` branch. **Ignore every "branch: client-web-app" line in PART 1.**
+  All work now happens on `main`.
+- **Change #1 (company name reorder) is DONE and committed** — no longer ⬜. It still
+  needs a visual PDF test (deferred — Data chose to finish the branch work first).
+- **Render now deploys from `main`** (was `client-web-app`). Verified live.
+- **Changes #2–#7 are still ⬜ To do** — unchanged from PART 1. The technical notes
+  in PART 1 § "THE 7 CHANGES" are all still valid.
+
+---
+
+## 📍 WHERE WE ARE NOW
+
+- **Phase:** Phase 5 web app live. Now in Client Revisions Round 1.
+- **Branch:** `main` only — single-branch model (consolidation done this session).
+- **Change #1:** implemented + committed (`ec41192`). Visual PDF test still pending.
+- **Changes #2–#7:** not started.
+- **Invoice STEP 7 (documentation of the consolidation):** NOT done — this is the
+  next job, to be done in the new chat.
+
+---
+
+## ✅ WHAT WE ACCOMPLISHED — PART 2
+
+1. **Implemented change #1** — company name reorder in `templates/invoice.html`
+   (`e-agency LJUBINKA Vuković s.p.` → `e-agency s.p. LJUBINKA Vuković`). Committed `ec41192`.
+2. **Consolidated two branches into one** — the big event (full story below).
+3. **Repointed Render** from `client-web-app` to `main` (`render.yaml` + dashboard). Verified live.
+4. **Deleted `client-web-app`** locally and on GitHub — only `main` remains.
+5. **Wrote Learning Methodology v2** in `data-brain-gym/docs/` (side quest below). Pushed.
+
+---
+
+## 🌿 THE BIG EVENT — branch consolidation (two → one)
+
+**Why:** Data realised the original reason for two branches was a false assumption —
+he thought local testing required a separate `main` branch. It does not: any branch
+can run `main.py` locally. With that assumption gone, the two-branch split added
+complexity for no benefit (solo developer). Decision: consolidate to a single `main`.
+
+**The investigation (proof before action):**
+- `git log client-web-app..main` → empty → `main` had no unique commits.
+- `git merge-base --is-ancestor main client-web-app` → true → safe fast-forward.
+- `render.yaml` → confirmed Render was watching `client-web-app`.
+
+**The 6 safe steps executed (in this exact order to protect the live app):**
+1. Commit change #1 on `client-web-app` (`ec41192`).
+2. `git checkout main` + `git merge client-web-app --ff-only` → `main` now has everything.
+3. Edit `render.yaml`: `branch: client-web-app` → `branch: main`, commit (`6f938a0`).
+4. `git push origin main`.
+5. Data switched Render's branch to `main` in the dashboard → redeploy → verified
+   **"Your service is live 🎉"** with commit `6f938a0` (proof it deploys from main).
+6. Deleted `client-web-app`: local + `git push origin --delete client-web-app`.
+
+**Order rationale:** the live app never lost its branch at any moment. The old branch
+stayed as a safety net until Render was proven to be on `main`.
+
+---
+
+## 🐛 LESSON LEARNED — `git branch -d` vs `-D` (the gotcha)
+
+- **What happened:** `git branch -d client-web-app` was **refused** with "not fully
+  merged", even though the work was safely on `main`.
+- **Why:** `-d` (safe delete) checks if the branch is merged into its **upstream**
+  (`origin/client-web-app`), NOT into `main`. Our commit `ec41192` existed on `main`
+  but not on the branch's own upstream → Git refused.
+- **The proof, not assumption:** `git branch -a --contains ec41192` showed the commit
+  lived on `main` AND `origin/main` → nothing could be lost.
+- **Fix:** `-D` (force delete) — used deliberately, only after proving safety.
+- **Takeaway:** `-d` compares against upstream, not `main`. When a feature branch is
+  merged into `main` (not back into its own origin), `-d` will complain. Verify with
+  `--contains`, then `-D` with reason.
+
+---
+
+## 📚 SIDE QUEST — Learning Methodology v2 (data-brain-gym)
+
+Data asked for a refreshed Data–Spock learning methodology (the July 2025 one was
+633 lines, tied to a dead Terraform context). Read the real current method first:
+`know-thyself.md`, `datacamp.instructions.md`, `data-brain-gym/README.md`.
+
+- **Created:** `data-brain-gym/docs/data-spock-learning-methodology.md` — 190 lines,
+  v2, distilled from one year of practice. Committed `190ce88`, pushed to GitHub.
+- **Key idea:** 11 principles, two nested loops (Practice→Pattern→Principle for the
+  method; 5-block for each artifact), three voices (Data/Spock/Troi), and an explicit
+  "what we rejected" section. Lean by design.
+- This is **separate from the invoice project** — different repo, self-contained, done.
+
+---
+
+## 🌱 GIT STATE (end of PART 2)
+
+- **invoice-automation:** branch `main` only, synced with `origin/main`. Last commit
+  `6f938a0` (render.yaml). Change #1 (`ec41192`) is in history. `client-web-app` deleted
+  everywhere. Working tree clean (except gitignored local files).
+- **data-brain-gym:** branch `main`, synced with `origin/main`. Last commit `190ce88`
+  (methodology v2).
+- Both repos fully pushed. Nothing uncommitted that matters.
+
+---
+
+## ⏭️ NEXT STEP — invoice STEP 7 (do this in the NEW chat)
+
+The branch consolidation is functionally complete. What remains is **documenting it**
+so code and docs match reality. Four sub-steps, in order:
+
+1. **Update `.github/copilot-instructions.md`** — the "🌿 Branch Structure" section
+   still prescribes TWO branches (`main` + `feature/flask-app` / `client-web-app`).
+   Rewrite it to the **single-branch model**. (Highest priority — it dictates future behaviour.)
+2. **Update `client-revisions-round-1.md`** — (a) change #1 status ⬜ → ✅; (b) header
+   `Branch: client-web-app` → `main`; (c) a one-line note in the progress journal that
+   the branch structure was consolidated.
+3. **Captain's log** — already done (this PART 2). Just verify it's committed.
+4. **Git branch-consolidation playbook — TWO files** (Data's explicit request):
+   - **Recruiter version** (short, scannable): `invoice-automation/guides/git-branch-consolidation.md`
+   - **Know-thyself version** (detailed, educational, in our methodology style):
+     `know-thyself-data/docs/git-branch-consolidation.md`
+   - Content already scoped: situation + false assumption → mental models → the 6 safe
+     steps with rationale → annotated commands → the `-d` vs `-D` gotcha → lessons.
+     Write the detailed one first, then distil the recruiter one from it.
+
+**After STEP 7:** return to the actual client changes — **#2 through #7** (technical
+notes in PART 1). Then run the visual PDF test for #1 (and all changes) per PART 1's
+"HOW TO TEST". Per project rule, the invoice design is already on `main`, so the
+"port to main" reminder in `client-revisions-round-1.md` § 5 is now satisfied by the
+consolidation — note that when closing the tracking file.
+
+---
+
+## 📏 RULES TO REMEMBER (carried from PART 1, still active)
+
+- Address the user as **"Data"**. Confirmation Rule: announce → STOP → wait for `ok`.
+- Privacy: never commit anything in `data/`. `git status` before staging; stage
+  explicitly; never `git add .`.
+- Terminals: always use the run-in-terminal tool. Disable pagers (`git --no-pager`).
+- Docs in English; conversation with Data in Serbian/Bosnian.
+- **Single branch now:** there is no more "port to the other branch" — `main` is the
+  only branch. Update any doc that still implies two branches.
+
+---
+
+*Logged by Spock · PART 2 · Stardate 20260620 · single-branch `main`, methodology v2 shipped*
