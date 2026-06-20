@@ -25,6 +25,9 @@ captains-log/chat-exports/
 # Customer data — GDPR/privacy protection, never upload to GitHub
 data/*.pdf
 data/*.xlsx
+data/*.jpg
+data/*.jpeg
+data/*.png
 data/APRIL 2026/
 data/*/
 
