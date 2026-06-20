@@ -37,10 +37,11 @@ services:
     # runtime: python → "use a Python environment to run this service"
     # Render supports: python, node, ruby, go, rust, docker, etc.
 
-    branch: client-web-app
+    branch: main
     # branch → which GitHub branch to deploy from
     # Render watches THIS branch — every git push here triggers a new deploy.
-    # Our main branch (local pipeline) is never touched by Render.
+    # The project was consolidated to a single branch (main): it now holds both
+    # the local pipeline (main.py) and the web app (app.py). Render deploys main.
 
     buildCommand: "./build.sh"
     # buildCommand → the command Render runs ONCE to prepare the app
