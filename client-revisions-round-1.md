@@ -2,9 +2,9 @@
 ## Project: Invoice Automation Tool
 ### Tracking document for client-requested changes (start → finish)
 
-> **Branch:** `client-web-app`
+> **Branch:** `main` (single-branch model — consolidated Stardate 20260620)
 > **Started:** Stardate 20260620
-> **Status:** 🟡 In progress — change list captured (7 items), implementation pending
+> **Status:** 🟡 In progress — change #1 done; #2–#7 pending
 > **Type:** Mostly aesthetic (design/layout) changes requested by the client
 
 ---
@@ -32,16 +32,17 @@ Before touching anything, we know where each change "lives" and what it can brea
 
 | File | Controls | Risk | Affects |
 |---|---|---|---|
-| `templates/invoice.html` | **Invoice appearance** (CSS + layout) | 🟢 Low | **Both branches** (`main` + `client-web-app`) |
+| `templates/invoice.html` | **Invoice appearance** (CSS + layout) | 🟢 Low | **Both paths** (local `main.py` + web `app.py`) |
 | `templates/upload.html` | Web upload page appearance | 🟢 Low | Web app only |
-| `templates/assets/` | Logo, stamp, signature images | 🟢 Low | Both branches |
+| `templates/assets/` | Logo, stamp, signature images | 🟢 Low | Both paths |
 | `app.py` | Web logic (upload → ZIP) | 🟠 Medium | Web app only |
-| `main.py` | Pipeline (Excel → PDF) | 🔴 High | Both branches |
+| `main.py` | Pipeline (Excel → PDF) | 🔴 High | Local path only |
 
 **Key insight:** Since the changes are mostly aesthetic, almost everything will
 happen in `templates/invoice.html` — the **lowest-risk file** (presentation only,
 no logic). We can safely change colors, spacing, fonts, layout, and text without
-risking the PDF generation.
+risking the PDF generation. Because we use a **single `main` branch**, one edit to
+`invoice.html` updates both the local and web paths at once — no porting needed.
 
 ---
 
@@ -59,8 +60,8 @@ A standard, professional process (also looks good to a recruiter):
 5. **🧪 Test after each change** — generate the PDF locally, verify visually,
    then move on.
 6. **💾 Commit after each logical change** — descriptive message (recruiter rule).
-7. **🔄 At the end:** apply shared-code changes to the `main` branch + record in
-   the captain's log.
+7. **🔄 At the end:** record the final summary in the captain's log. (No branch
+   porting — single `main` branch means each commit already updates both paths.)
 
 ---
 
@@ -73,7 +74,7 @@ A standard, professional process (also looks good to a recruiter):
 
 | # | Change | Type | Risk | File(s) | Status | Notes |
 |---|---|---|---|---|---|---|
-| 1 | Company name reorder → `e-agency s.p. LJUBINKA Vuković` | Aesthetic (text) | 🟢 Low | `invoice.html` | ⬜ | Currently `e-agency LJUBINKA Vuković s.p.` — move `s.p.` to right after `e-agency`. ✅ Confirmed by client. |
+| 1 | Company name reorder → `e-agency s.p. LJUBINKA Vuković` | Aesthetic (text) | 🟢 Low | `invoice.html` | ✅ | Was `e-agency LJUBINKA Vuković s.p.` — moved `s.p.` to right after `e-agency`. Implemented + committed (`ec41192`). Visual PDF test still pending. |
 | 2 | Bold the company details block (address / JIB / bank) | Aesthetic (CSS) | 🟢 Low | `invoice.html` | ⬜ | Client wrote *"boldovati"* on the framed block — make text more visible. `.company-details` → heavier `font-weight`. |
 | 3 | Meta row background: pale pink → light gray | Aesthetic (CSS) | 🟢 Low | `invoice.html` | ⬜ | `.meta-row` uses `--primary-light` (#f9f0f3). Client dislikes the pinkish tone — switch to a light gray of similar lightness. |
 | 4a | Table: add **"Obračunski period"** label | Aesthetic (text) | 🟢 Low | `invoice.html` | ⬜ | Period column. **Interpretation: rename `PERIOD` header → `OBRAČUNSKI PERIOD` — verify exact wording/placement with client.** |
@@ -84,18 +85,19 @@ A standard, professional process (also looks good to a recruiter):
 
 ---
 
-## ⚠️ 5. REMINDER — shared code must reach `main`
+## ✅ 5. SHARED CODE — now handled by the single-branch model
 
 `templates/invoice.html` is **shared code** — used by both `main.py` (local) and
-`app.py` (web). Per project rule:
+`app.py` (web). Previously the project had two branches, so every shared-code
+change had to be **manually ported** between them.
 
-> *Bugfixes in shared code must be applied manually to both branches.*
+**This is no longer a concern.** On Stardate 20260620 the project was consolidated
+into a **single `main` branch** (full story: `guides/git-branch-consolidation.md`).
+Now one commit to `invoice.html` updates both the local and web paths at once —
+there is nothing to port.
 
-When the invoice design is finalized on `client-web-app`, the same changes must
-be ported to the `main` branch so the two do not drift apart.
-
-- [ ] Invoice changes ported to `main` branch
-- [ ] Captain's log updated with final summary
+- [x] Invoice changes reach both paths automatically (single `main` branch)
+- [ ] Captain's log updated with final summary (per round)
 
 ---
 
@@ -106,6 +108,7 @@ Short, dated references to each session (no duplication — details live above).
 | Stardate | Session summary |
 |---|---|
 | 20260620 | Created this tracking document. Gathered full project context. Defined architecture map + work process. **Captured 7 client changes** from the annotated invoice photo (`data/IMG-20260620-WA0003.jpg`) and filled in the change list. Implementation not yet started. |
+| 20260620 | **Implemented change #1** (company name reorder), committed `ec41192`. **Consolidated the two branches (`main` + `client-web-app`) into a single `main`** — Render now deploys from `main`, old branch deleted. Updated this file to the single-branch model (header, architecture map, work process, § 5). |
 
 ---
 

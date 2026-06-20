@@ -28,10 +28,17 @@ That file is loaded automatically by VS Code in all workspaces. To update a shar
 
 ---
 
-## 🌿 Branch Structure
-- `main` → local pipeline, `python main.py`, generates PDFs locally. Never touched.
-- `feature/flask-app` → Flask web app, deploys to Render.com. All web work happens here.
-- **Rule:** Bugfixes in shared code must be applied manually to both branches.
+## 🌿 Branch Structure — Single Branch (`main`)
+- **`main` is the only branch.** It holds *everything*: the local pipeline
+  (`python main.py` → PDFs) **and** the Flask web app (`app.py` → Render.com).
+- **Render deploys from `main`.** Every push to `main` redeploys the live app.
+- **No porting between branches.** With one branch there is no "apply the fix to
+  the other branch too" — a single commit updates both the local and web paths,
+  since they share the same files (e.g. `templates/invoice.html`).
+- **History:** the project briefly used a two-branch model (`main` +
+  `client-web-app`). It was consolidated into a single `main` on Stardate 20260620
+  because the split added complexity with no benefit for a solo developer. Full
+  story + reusable playbook: `guides/git-branch-consolidation.md`.
 
 ---
 
