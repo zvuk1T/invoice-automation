@@ -17,9 +17,11 @@ Built as a learning project and real-world automation tool for a real estate age
 | Tool | Purpose |
 |------|---------|
 | Python | Automation & logic |
-| Excel (.xlsx) | Input data source |
-| HTML/CSS | Invoice template design |
-| PDF library | Output generation |
+| pandas | Read Excel rows into data |
+| Jinja2 | Fill the HTML template per invoice |
+| WeasyPrint | Render HTML/CSS → PDF |
+| Flask | Web app — upload Excel, download ZIP |
+| Render.com | Cloud hosting of the web app |
 
 ---
 
@@ -30,7 +32,10 @@ invoice-automation/
 ├── data/           ← Excel input file
 ├── templates/      ← HTML/CSS invoice template
 ├── output/         ← Generated PDF files
-├── main.py         ← Main script
+├── main.py         ← Local pipeline: Excel → PDF
+├── app.py          ← Flask web app: upload Excel → download ZIP
+├── build.sh        ← Render.com build script (installs WeasyPrint system libs)
+├── render.yaml     ← Render.com deployment config
 ├── requirements.txt← Python dependencies
 └── .github/        ← Project guides and instructions
 ```
@@ -43,7 +48,7 @@ invoice-automation/
 - [x] HTML invoice template
 - [x] Python + Excel integration
 - [x] PDF generation (WeasyPrint)
-- [x] Flask web app (Phase 5, branch: `client-web-app`)
+- [x] Flask web app (Phase 5) — deployed on Render.com
 - [x] Combined PDF generation
 - [x] Branded upload page (upload.html)
 - [x] Render.com deployment files (`build.sh`, `render.yaml`)
@@ -55,17 +60,21 @@ invoice-automation/
 
 - **Local:** `python main.py` — generates PDFs in `output/`
 - **Web app:** Flask app (`app.py`) — upload Excel, download ZIP with PDFs
-- **Cloud:** Render.com (free tier) — auto-deploys from `client-web-app` branch
+- **Cloud:** Render.com (free tier) — auto-deploys from `main`
 - **Live URL:** https://e-agency-invoice-automation.onrender.com
 
 ---
 
-## 🧭 Branching Strategy
+## 🧭 Architecture — Single `main` Branch
 
-- `main` — local pipeline, runs with `python main.py`, generates PDFs directly to `output/`
-- `client-web-app` — Flask web app, deployed to Render.com, accessible via browser (no Python required)
+One branch holds everything: the local pipeline (`python main.py` → PDFs in
+`output/`) and the Flask web app (`app.py` → deployed on Render.com). They share
+the same invoice template, so one edit updates both paths.
 
-**Why two branches?** The client needed a browser-based tool (no installation). Rather than break the working local version, a separate branch was created for the web app — each branch serves a different user and use case.
+**History:** the project briefly used two branches (`main` + `client-web-app`).
+For a solo developer that split added porting work with no benefit, so the
+branches were consolidated into a single `main` (full story:
+`guides/git-branch-consolidation.md`).
 
 ---
 

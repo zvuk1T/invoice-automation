@@ -1,44 +1,34 @@
-# 📝 CLIENT REVISIONS — ROUND 1
+# 📝 CLIENT REVISIONS — ROUNDS 1 & 2
 ## Project: Invoice Automation Tool
 ### Tracking document for client-requested changes (start → finish)
 
 > **Branch:** `main` (single-branch model — consolidated Stardate 20260620)
 > **Started:** Stardate 20260620
-> **Status:** � Round 1 implemented — all changes **committed + pushed**. Awaiting client's round-2 feedback.
+> **Status:** 🟢 Rounds 1 & 2 implemented + verified. Round 1 committed + pushed; Round 2 in the working tree, ready to commit.
 > **Type:** Mostly aesthetic (design/layout) changes requested by the client
 
 ---
 
-## ⏭️ RESUME HERE — next-session quick start (Stardate 20260620, PART 5)
+## ⏭️ RESUME HERE — next-session quick start (Stardate 20260621, PART 6)
 
 > This block is the **first thing to read** when resuming. It supersedes older status
-> lines. Full session story: captain's log `captains-log-stardate-20260620.md` **PART 5**.
+> lines. Full session story: captain's logs `...20260620.md` (PART 5) and `...20260621.md`.
 
-**State of the work:** Round 1 is **DONE, committed, and pushed.** All of the client's
-requested changes (#2–#7) plus the color/text design pass are live in `templates/invoice.html`.
-The signature/stamp footer was nudged **+3cm lower** per Data's explicit instruction
-(`.footer { margin-top: 3cm }`). The invoice was sent to the client for review.
+**State of the work:** Rounds 1 and 2 are **DONE and verified.** Round 1 (#1–#7 + the
+design-system pass) is committed and pushed (`99c89cc`). Round 2 — a second feedback pass
+on the masthead/footer/signature — is implemented in `templates/invoice.html` and sits in
+the working tree, ready to commit. See the **ROUND 2** section below for the essence.
 
-**⚠️ Important lesson from this session (do not repeat):** Spock went off-brief and
-spent a long, token-heavy detour redesigning the **vertical proportions** (sticky footer,
-`position:fixed`, centering, flex space-between) — something the client **never asked for**.
-It broke a layout the client was already happy with. It was fully **reverted**. The only
-proportion change kept is Data's simple, explicit one: footer +3cm. **Rule reinforced:
-do exactly what the client's notes say — colors and text — and nothing more. Do not invent
-design problems.**
+**What Round 2 changed (essence — exact values live in the code, not here):** the signer
+name was aligned to the masthead casing, "air" was added under the brand line with a
+matching pull in the footer so the signature stayed put (the "cancellation trick"), and the
+stamp was repositioned so it overlaps the signature without covering the printed name.
 
-**What we are waiting for:** the client (Ljubinka) will likely respond tomorrow with
-round-2 feedback. Her annotated photo (`data/IMG-20260620-WA0003.jpg`) raised two of her
-**own questions** that only she can answer:
-- Table header color: **"tamno siva ili crvena???"** → **DECIDED with Data: keep her bordo
-  header** (no change needed).
-- "tamno crvena kao gornja" referred to the **divider line we already deleted** → moot,
-  nothing to color.
-
-**First move next session:** read the client's new message, add any new requests as
-**round-2** rows in the change list below, then implement (colors/text only unless she
-explicitly asks for layout). Regenerate via the venv python, open
-`output/2026-05-0004.pdf` (Smilja Tepić — matches her annotated photo) to verify.
+**Also done this session (Stardate 20260621):** a documentation pass — the inline comments
+in `invoice.html` were reframed from change-history ("client asked X on day Y") to
+**teaching comments** that explain the technique, so a student could rebuild the file alone.
+This is the new **Learning & Understanding hard rule** + **DIKW** principle in action (see
+the core instructions and the learning methodology).
 
 **Known pre-existing bug (NOT part of design — do not fix inside a design commit):**
 `main.py` writes several `output/nan.pdf` files that overwrite each other (rows with
@@ -126,6 +116,22 @@ A standard, professional process (also looks good to a recruiter):
 > **Tier 1** (design tokens + gray consolidation) and **Zone A** (removed the redundant
 > stacked bottom line; note → right-aligned caption). All fold into the same single commit.
 
+---
+
+## 📋 4B. ROUND 2 — second feedback pass
+
+> A second look at the masthead → body → signature flow. All aesthetic, all in
+> `templates/invoice.html`. Exact pixel/mm values live in the code comments (the
+> KNOWLEDGE layer); this table keeps only the essence (what changed and why).
+
+| # | Change | Why | Technique |
+|---|---|---|---|
+| R2-1 | Signer name casing aligned to the masthead | The printed name should read the same as the company name up top, not shout in ALL-CAPS | Casing lives in the HTML text (`LJUBINKA Vuković`), not a `text-transform` rule |
+| R2-2 | "Air" added under the brand line — without moving the signature | More breathing room below the masthead, but the footer had to keep its vertical position | The **cancellation trick**: space added to `.header { margin-bottom }` is removed in equal measure from `.footer { margin-top }` |
+| R2-3 | Stamp repositioned to overlap the signature, not the printed name | A real rubber stamp is struck over the signature, but must not bury the legible name | Negative `top` pulls the stamp up out of normal flow; `calc()` mixes px + mm |
+
+**Verification:** PDF regenerated and reviewed with Data — approved (*"To je to, dobro je"*).
+No values changed after approval; only the code comments were later reframed (see PART 6).
 
 ---
 
@@ -155,6 +161,7 @@ Short, dated references to each session (no duplication — details live above).
 | 20260620 | **Implemented change #1** (company name reorder), committed `ec41192`. **Consolidated the two branches (`main` + `client-web-app`) into a single `main`** — Render now deploys from `main`, old branch deleted. Updated this file to the single-branch model (header, architecture map, work process, § 5). |
 | 20260620 | **Implemented changes #2–#7** in `templates/invoice.html` (bold details, gray meta row, "Obračunski period", rounded table card, gray outlines, signature/stamp overlay) **plus a design-system pass** — Tier 1 (design tokens + gray consolidation) and Zone A (bottom-line cleanup). **All UNCOMMITTED** (working tree only; `git diff --stat` ≈ 114/79). One open decision before commit: the **footer divider line** (→ Option A). Did web design research ("top shouts, bottom whispers"). Chat got context-heavy (a 408 timeout from an oversized web-fetch) → decided to checkpoint docs and resume in a fresh chat. See captain's log **PART 4** + the "⏭️ RESUME HERE" block above. |
 | 20260620 | **Round 1 finalized + committed + pushed.** Detour lesson: Spock went off-brief redesigning **vertical proportions** (sticky footer / `position:fixed` / centering / flex) — never requested, broke a layout the client liked → **fully reverted**. Kept only Data's explicit footer **+3cm** (`.footer { margin-top: 3cm }`). Flipped #2–#7 ⬜→✅, updated header status to 🟢, rewrote the RESUME block to **PART 5**. Invoice sent to client; awaiting round-2 feedback. See captain's log **PART 5**. |
+| 20260621 | **Round 2 implemented + verified** (masthead air + cancellation trick, signer-name casing aligned to masthead, stamp repositioned) — see §4B. **Documentation pass:** reframed `invoice.html` comments from change-history → teaching comments (technique, not iteration trivia); refreshed the README to the single-branch model. Applied the new **Learning & Understanding hard rule** + **DIKW** principle (core instructions + learning methodology). Round 2 + comment pass sit in the working tree, ready to commit. See captain's log `...20260621.md`. |
 
 ---
 

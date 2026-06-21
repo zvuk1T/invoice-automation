@@ -99,7 +99,13 @@
       align-items: center;
       padding-bottom: 20px;
       border-bottom: 3px solid var(--primary);
-      margin-bottom: 20px;
+      /* 20px base + 1.5cm "air" below the brand line → a gap between the masthead
+         and the invoice body (logo → gap → content).
+         Technique — the "cancellation trick": the air added here is cancelled by
+         an equal amount in .footer { margin-top }, so the middle block drops
+         WITHOUT pushing the signature down the page. Add space at the top, remove
+         the same at the bottom → the footer's vertical position stays put. */
+      margin-bottom: calc(20px + 1.5cm);
     }
 
     /* Logo — height matches company text block (name + 3 lines ≈ 72px) */
@@ -123,7 +129,7 @@
       margin-top: 5px;
       color: var(--ink-muted);
       font-size: 11px;
-      font-weight: 800;   /* change #2: client asked to "boldovati" — bumped 600→800 for stronger weight */
+      font-weight: 800;   /* extra-bold so the small address / JIB / bank lines stay legible */
       line-height: 1.7;
       text-align: center;
     }
@@ -349,7 +355,11 @@
        block hanging at the bottom of the taller signature block.
        ══════════════════════════════════════════════ */
     .footer {
-      margin-top: 3cm;         /* Data's request: push the whole footer (contact + signature + stamp) ~3cm lower */
+      /* margin-top does two jobs: it absorbs the "air" added to .header (the
+         cancellation trick — see .header) so the signature keeps its height, and
+         it adds breathing room below the body. The footer is the LAST element on
+         the page, so moving it down pushes nothing else around. */
+      margin-top: 3cm;
       padding-top: var(--gap); /* breathing room above the signature band */
       display: flex;
       justify-content: space-between;
@@ -363,7 +373,7 @@
       line-height: 1.8;
     }
 
-    /* Signature block — right side, content centered (change #7).
+    /* Signature block — right side, content centered.
        position: relative → anchor for the absolutely-positioned stamp overlay. */
     .footer-signature {
       position: relative;
@@ -374,13 +384,13 @@
       color: #555;
     }
 
-    /* "S poštovanjem," closing line — sits directly above the signature (change #7) */
+    /* "S poštovanjem," closing line — sits directly above the signature */
     .footer-signature .sig-closing {
       margin-bottom: 2px;
     }
 
-    /* Handwritten signature (potpis) — now in NORMAL FLOW, tight under the closing,
-       so "S poštovanjem," sits right above it like a real letter (change #7) */
+    /* Handwritten signature (potpis) — in NORMAL FLOW, tight under the closing,
+       so "S poštovanjem," sits right above it like a real letter */
     .footer-signature .sig-image {
       display: block;
       max-height: 50px;
@@ -390,7 +400,7 @@
       z-index: 1;           /* below the stamp */
     }
 
-    /* Horizontal signature line — signature sits above, name below (change #7) */
+    /* Horizontal signature line — signature sits above, name below */
     .footer-signature .sig-line {
       border-top: 1.5px solid var(--ink-muted);
       width: 100%;
@@ -399,19 +409,22 @@
       z-index: 1;
     }
 
-    /* Signer name — bordo, bold, UPPERCASE, below the line (change #7) */
+    /* Signer name — bordo, bold, below the signature line.
+       Technique: the capitalization lives in the HTML text itself
+       ("LJUBINKA Vuković"), NOT in a text-transform rule — so the printed name
+       matches the header masthead exactly. (text-transform: uppercase would
+       force ALL-CAPS and break that match.) */
     .footer-signature .sig-name {
       font-weight: 700;
       font-size: 14px;
       color: var(--primary);
-      text-transform: uppercase;
       letter-spacing: 0.5px;
       position: relative;
       z-index: 1;
     }
 
     /* ══════════════════════════════════════════════
-       STAMP OVERLAY (pečat) — change #7
+       STAMP OVERLAY (pečat)
        ──────────────────────────────────────────────
        A real rubber stamp is struck LAST, over everything.
        Source: Wikipedia "Rubber stamp" — formal documents are
@@ -425,7 +438,10 @@
        ══════════════════════════════════════════════ */
     .stamp-image {
       position: absolute;
-      top: 20px;                 /* just under "S poštovanjem," — over the signature */
+      top: calc(-10px - 3mm);    /* Negative top pulls the stamp UP out of normal flow so it
+                                    overlaps the signature like a real rubber stamp, without
+                                    covering the printed name below the line.
+                                    Technique: calc() mixes units — px (screen) + mm (print). */
       left: 50%;
       transform: translateX(-50%) rotate(-8deg); /* centered, tilted like a real stamp */
       max-height: 90px;
@@ -534,8 +550,8 @@
       <div class="sig-closing">S poštovanjem,</div>
       <img src="assets/potpis.png" alt="Potpis" class="sig-image" />
       <div class="sig-line"></div>
-      <div class="sig-name">Ljubinka Vuković</div>
-      <!-- Pečat — struck last, floats over the signature (change #7) -->
+      <div class="sig-name">LJUBINKA Vuković</div>
+      <!-- Pečat — struck last, floats over the signature -->
       <img src="assets/pecat.png" alt="Pečat" class="stamp-image" />
     </div>
   </div>
