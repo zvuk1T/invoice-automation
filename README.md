@@ -1,14 +1,30 @@
-# 📄 Invoice Automation Tool
+# 📄 Business Document Automation Tool
 
-> Automatically generate PDF invoices from Excel data using HTML/CSS templates.
+> A Python/Flask web application that transforms structured business data into ready-to-use PDF documents through an automated digital workflow.
 
 ---
 
 ## 🎯 Project Purpose
 
-This tool reads an Excel file where each row represents one invoice, applies an HTML/CSS template, and generates a multi-page PDF — one page per invoice.
+This project demonstrates how repetitive document generation in a small business environment can be automated by converting structured input data into standardized PDF documents.
 
-Built as a learning project and real-world automation tool for a real estate agency.
+The application provides a simple web interface for uploading structured business data and downloading generated PDF documents as a ZIP archive.
+
+Built as a learning project and real-world automation tool for a small real estate business.
+
+---
+
+## 💼 Business Context
+
+Small businesses often spend significant time preparing repetitive administrative documents manually. This creates unnecessary operational friction, increases the chance of errors, and makes recurring office processes harder to scale.
+
+This project turns that workflow into a repeatable digital process:
+
+```text
+structured business data → HTML/CSS template → PDF documents → ZIP download
+```
+
+The goal is not only to generate documents, but to show how practical automation can support business efficiency, data-driven digital transformation, and better internal workflows.
 
 ---
 
@@ -16,65 +32,65 @@ Built as a learning project and real-world automation tool for a real estate age
 
 | Tool | Purpose |
 |------|---------|
-| Python | Automation & logic |
-| pandas | Read Excel rows into data |
-| Jinja2 | Fill the HTML template per invoice |
-| WeasyPrint | Render HTML/CSS → PDF |
-| Flask | Web app — upload Excel, download ZIP |
-| Render.com | Cloud hosting of the web app |
+| Python | Automation, application logic and data processing |
+| pandas | Reading structured tabular input data |
+| Jinja2 | Rendering business data into HTML templates |
+| WeasyPrint | Converting HTML/CSS templates into PDF documents |
+| Flask | Web application layer — upload data, download generated documents |
+| Render.com | Cloud hosting of the web application |
 
 ---
 
 ## 🗂️ Project Structure
 
-```
+```text
 invoice-automation/
-├── data/           ← Excel input file
-├── templates/      ← HTML/CSS invoice template
-├── output/         ← Generated PDF files
-├── main.py         ← Local pipeline: Excel → PDF
-├── app.py          ← Flask web app: upload Excel → download ZIP
-├── build.sh        ← Render.com build script (installs WeasyPrint system libs)
-├── render.yaml     ← Render.com deployment config
-├── requirements.txt← Python dependencies
-└── .github/        ← Project guides and instructions
+├── data/            ← Local input data folder, ignored for privacy
+├── templates/       ← HTML/CSS templates and upload page
+├── output/          ← Generated PDF files, ignored by Git
+├── main.py          ← Local pipeline: structured data → PDF documents
+├── app.py           ← Flask web app: upload input data → download ZIP
+├── build.sh         ← Render.com build script, installs WeasyPrint system libraries
+├── render.yaml      ← Render.com deployment configuration
+├── requirements.txt ← Python dependencies
+└── .github/         ← Project guides and development instructions
 ```
 
 ---
 
-## 🚀 Status
+## 🚀 Current Status
 
 - [x] Project structure created
-- [x] HTML invoice template
-- [x] Python + Excel integration
-- [x] PDF generation (WeasyPrint)
-- [x] Flask web app (Phase 5) — deployed on Render.com
-- [x] Combined PDF generation
-- [x] Branded upload page (upload.html)
+- [x] HTML/CSS document template
+- [x] Python data-loading and document-generation pipeline
+- [x] PDF generation with WeasyPrint
+- [x] Flask web application deployed on Render.com
+- [x] ZIP download workflow
+- [x] Branded upload page
 - [x] Render.com deployment files (`build.sh`, `render.yaml`)
-- [ ] Packaging as `.exe` (future)
+- [ ] Packaging as `.exe` for local desktop use (future option)
 
 ---
 
 ## 🌐 Deployment
 
-- **Local:** `python main.py` — generates PDFs in `output/`
-- **Web app:** Flask app (`app.py`) — upload Excel, download ZIP with PDFs
-- **Cloud:** Render.com (free tier) — auto-deploys from `main`
+- **Local pipeline:** `python main.py` — generates PDF documents locally in `output/`
+- **Web app:** Flask app (`app.py`) — upload structured input data, download ZIP with generated PDFs
+- **Cloud:** Render.com — auto-deploys from `main`
 - **Live URL:** https://e-agency-invoice-automation.onrender.com
 
 ---
 
 ## 🧭 Architecture — Single `main` Branch
 
-One branch holds everything: the local pipeline (`python main.py` → PDFs in
-`output/`) and the Flask web app (`app.py` → deployed on Render.com). They share
-the same invoice template, so one edit updates both paths.
+One branch holds both workflows:
 
-**History:** the project briefly used two branches (`main` + `client-web-app`).
-For a solo developer that split added porting work with no benefit, so the
-branches were consolidated into a single `main` (full story:
-`guides/git-branch-consolidation.md`).
+1. The local pipeline (`main.py`) for local document generation.
+2. The Flask web app (`app.py`) for browser-based upload and ZIP download.
+
+Both workflows reuse the same template logic, so one template update affects both local and web-based generation.
+
+**History:** the project briefly used two branches (`main` + `client-web-app`). For a solo developer, that split created extra porting work without practical benefit, so the branches were consolidated into a single `main` branch. The full reasoning is documented in `guides/git-branch-consolidation.md`.
 
 ---
 
@@ -82,17 +98,37 @@ branches were consolidated into a single `main` (full story:
 
 | Problem | Solution |
 |---------|----------|
-| WeasyPrint requires system libraries not available on Render.com by default | Created `build.sh` to install pango, cairo, libffi, libjpeg before pip install |
-| `load_excel_data()` accepted only file paths, Flask sends BytesIO objects | Pandas natively handles both — no code change needed, documented the behaviour |
-| PDF generation writes to disk — incompatible with Render.com free tier (ephemeral filesystem) | Switched to in-memory PDF generation using `BytesIO`, ZIP returned directly in HTTP response |
-| Render.com defaulted to Python 3.14 — potential compatibility risk | Monitored build — no issues found. `.python-version` file available as fallback if needed |
+| PDF generation required system libraries not available on Render.com by default | Added `build.sh` to install required WeasyPrint dependencies such as pango, cairo, libffi and libjpeg |
+| Browser uploads send file-like objects instead of local file paths | Reused the same data-loading logic because pandas can handle both local paths and in-memory file objects |
+| Render.com free tier has an ephemeral filesystem | Switched the web app workflow to in-memory PDF and ZIP generation using `BytesIO` |
+| Public repository must not expose real business or client data | Added `.gitignore` rules for local data, generated files and private assets |
+
+---
+
+## 🔒 Privacy Note
+
+This public repository is intended as a portfolio and learning project. Real client data, generated business documents and private assets are excluded from version control.
+
+The public code demonstrates the workflow and architecture, while sensitive operational data remains local/private.
+
+---
+
+## 🧠 What This Project Demonstrates
+
+- Data-driven workflow automation
+- Business process digitalization
+- Structured data processing with Python
+- Template-based document generation
+- Flask web application development
+- In-memory file processing for cloud deployment
+- Practical small-business digital transformation
 
 ---
 
 ## 📝 Guides & Mission Protocol
 
 - `.github/copilot-instructions.md` — Spock & Data mission protocol, session rules
-- `guides/git-best-practices.md` — branching, commit, push, mental modeli
+- `guides/git-best-practices.md` — branching, commits, push workflow and mental models
 - `captains-log/` — session logs, what/why/next
 
 ---
@@ -100,5 +136,3 @@ branches were consolidated into a single `main` (full story:
 ## 🖖 Mission Statement
 
 *All sessions are a collaborative mission: Spock (mentor) and Data (student) work together to boldly go where no one has gone before.*
-
----
